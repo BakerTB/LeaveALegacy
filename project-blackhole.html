@@ -81,6 +81,86 @@
 
     .rev { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
     .rev.in { opacity: 1; transform: none; }
+
+    /* ── Media ── */
+    .media-vid {
+      position: relative;
+      display: block;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.65);
+      text-decoration: none;
+      background: #000;
+    }
+    .media-vid img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+      opacity: 0.88;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .media-vid:hover img { opacity: 1; transform: scale(1.015); }
+    .media-play {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 72px; height: 72px;
+      background: rgba(255,255,255,0.92);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.25s ease, background 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .media-play::after {
+      content: '';
+      display: block;
+      width: 0; height: 0;
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+      border-left: 22px solid #111;
+      margin-left: 5px;
+    }
+    .media-vid:hover .media-play {
+      transform: translate(-50%, -50%) scale(1.10);
+      background: white;
+    }
+    .media-yt-lbl {
+      position: absolute;
+      bottom: 14px; left: 50%; transform: translateX(-50%);
+      font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(255,255,255,0.65); font-weight: 500;
+      background: rgba(0,0,0,0.4); padding: 4px 12px; border-radius: 20px;
+      backdrop-filter: blur(6px);
+    }
+    .media-imgs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .media-img {
+      width: 100%;
+      display: block;
+      border-radius: 8px;
+      border: 1px solid var(--border-hi);
+      box-shadow: 0 4px 18px rgba(0,0,0,0.55);
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      cursor: zoom-in;
+    }
+    .media-img:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.75);
+    }
+    .media-caption {
+      font-size: 11px;
+      color: var(--text-3);
+      letter-spacing: 0.08em;
+      text-align: center;
+      margin-top: 8px;
+    }
+    @media (max-width: 560px) {
+      .media-imgs { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
@@ -104,6 +184,28 @@
   </div>
 
   <div class="content">
+
+    <!-- Media: video + renders -->
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🎬</span><span class="card-title">Renders &amp; Demo</span></div>
+      <div class="card-body">
+        <img
+          src="blackhole.gif"
+          alt="Black Hole GPU Ray Tracing animation"
+          style="width:100%;border-radius:10px;display:block;box-shadow:0 4px 24px rgba(0,0,0,0.65);"
+        />
+        <div class="media-imgs">
+          <div>
+            <img class="media-img" src="blackhole-1.png" alt="Schwarzschild black hole render — photon ring and lensing" />
+            <p class="media-caption">Schwarzschild black hole — photon ring &amp; lensing</p>
+          </div>
+          <div>
+            <img class="media-img" src="blackhole-2.png" alt="Kerr black hole render — accretion disk with Doppler beaming" />
+            <p class="media-caption">Kerr black hole — accretion disk &amp; Doppler beaming</p>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div class="card rev">
       <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
@@ -140,6 +242,33 @@
           and λ is the affine parameter along the null geodesic.
         </div>
         <p style="font-size:0.8rem;color:var(--text-3);margin-top:10px">GPU parallelization via Taichi allows millions of these integrations to run simultaneously — enabling high-resolution, near-real-time rendering.</p>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🖥️</span><span class="card-title">Two Implementations — What Was Actually Built</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:16px;line-height:1.7">Two separate Python programs, each a complete standalone renderer targeting a different black hole geometry:</p>
+        <div class="metric-grid">
+          <div class="metric-card">
+            <div class="metric-name">BlackHoleRealist.py — Schwarzschild</div>
+            <div class="metric-desc" style="line-height:1.65">
+              <strong style="color:var(--text)">SPIN = 0.0</strong> (non-rotating). 1800 max ray steps. FBM (Fractional Brownian Motion) accretion disk — 6-octave noise with domain warp creates curved filament lanes vs dark gaps. Relativistic Doppler beaming (DOPPLER_STRENGTH = 3.5) affects luminosity without color shift. NASA Goddard amber/deep-red palette. ACES tonemapping + bloom + vignette post-processing. Pure black background, no skybox.
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-name">BlackHoleKerrGarg.py — Near-Maximal Kerr</div>
+            <div class="metric-desc" style="line-height:1.65">
+              <strong style="color:var(--text)">SPIN = 0.998</strong> (near-maximally spinning). 1500 max steps. Starfield skybox loaded from <code style="font-size:0.78rem">starmap.jpg</code>. Two colored sun light sources (amber + blue-white). Anamorphic lens flares. Film grain (GRAIN_INTENSITY = 0.015). Two-bounce frame-dragging geodesic acceleration term. Interactive camera: W/S/A/D to orbit/tilt, Q/E to zoom.
+            </div>
+          </div>
+        </div>
+        <div class="eq-block" style="margin-top:16px">
+          <div class="eq-label">Geodesic acceleration — Schwarzschild approximation used in render loop</div>
+          acc = −(1.5M / r²) · r̂  +  −(3M² / r⁴) · r̂  +  (2/r³) · v×J  +  spin correction term<br>
+          <span style="color:var(--text-3);font-size:0.78rem">Semi-analytic approximation — avoids full Christoffel symbol computation per step for GPU speed</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-3);margin-top:10px">Both render at 1280×720. Accumulative rendering (alpha = 0.12 per frame) acts as temporal anti-aliasing — images sharpen over ~30 frames rather than rendering a single noisy frame.</p>
       </div>
     </div>
 

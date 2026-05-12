@@ -58,6 +58,12 @@
     .hi-list { display: flex; flex-direction: column; gap: 12px; }
     .hi { display: flex; gap: 12px; align-items: flex-start; }
     .hi-arrow { color: var(--accent); font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+
+    .gif-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .gif-wrap { border-radius: 10px; overflow: hidden; border: 1px solid var(--border-hi); background: #000; }
+    .gif-wrap img { width: 100%; display: block; }
+    .gif-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-3); text-align: center; padding: 8px 0 4px; }
+    @media (max-width: 560px) { .gif-row { grid-template-columns: 1fr; } }
     .hi-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.65; }
     .hi-text strong { color: var(--text); font-weight: 600; }
 
@@ -103,9 +109,9 @@
     <h1 class="hero-title">2D Gravitational<br>Lensing</h1>
     <p class="hero-sub">Simulating how a black hole bends light rays using Schwarzschild geodesics — the foundation that led to full 3D GPU ray tracing.</p>
     <div class="stats-row">
-      <div class="stat"><span class="stat-val">2D</span><span class="stat-lbl">Simulation</span></div>
-      <div class="stat"><span class="stat-val">2</span><span class="stat-lbl">Methods</span></div>
-      <div class="stat"><span class="stat-val">v1</span><span class="stat-lbl">Foundation</span></div>
+      <div class="stat"><span class="stat-val">4</span><span class="stat-lbl">Simulations</span></div>
+      <div class="stat"><span class="stat-val">2D+3D</span><span class="stat-lbl">Dimensions</span></div>
+      <div class="stat"><span class="stat-val">Kerr</span><span class="stat-lbl">+ Schwarzschild</span></div>
     </div>
   </div>
 
@@ -120,6 +126,23 @@
           <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Used <strong>polar coordinates centered on the black hole</strong> to simplify curvature and distance calculations along each ray's trajectory.</span></div>
           <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">This project directly <strong>led to the 3D GPU Ray Tracing simulation</strong> — see <a href="project-blackhole.html" style="color:var(--accent);text-decoration:none;font-weight:600">Black Hole GPU Ray Tracing →</a></span></div>
         </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🎬</span><span class="card-title">Simulation Demos — Euler vs RK4</span></div>
+      <div class="card-body">
+        <div class="gif-row">
+          <div>
+            <div class="gif-label">Euler Method</div>
+            <div class="gif-wrap"><img src="euler-lensing.gif" alt="Euler gravitational lensing simulation" loading="lazy" /></div>
+          </div>
+          <div>
+            <div class="gif-label">RK4 Method</div>
+            <div class="gif-wrap"><img src="rk4-lensing.gif" alt="RK4 gravitational lensing simulation" loading="lazy" /></div>
+          </div>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-3);margin-top:12px;text-align:center">Both simulations trace photon paths through curved spacetime. The RK4 integrator produces smoother, more accurate trajectories at the same step size.</p>
       </div>
     </div>
 
@@ -193,6 +216,59 @@
     </div>
 
     <div class="card rev">
+      <div class="card-head"><span class="card-icon">🌀</span><span class="card-title">2D Kerr Lensing — Rotating Black Holes</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">After the Schwarzschild model, I extended the simulation to the <strong style="color:var(--text)">Kerr metric</strong> — which describes a spinning black hole. Spin changes everything: the black hole now drags spacetime around it, creating an ergosphere where particles are forced to co-rotate.</p>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Conserved quantities:</strong> Each ray's energy <em>E</em> and angular momentum <em>L</em> are extracted from the full Kerr metric components (g_tt, g_tφ, g_φφ, g_rr) at initialization and held constant throughout integration — the way GR actually works.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Ergosphere:</strong> Visualized at r = 2M as a yellow transparent circle. Inside the ergosphere, no ray can remain stationary — all are dragged in the direction of spin. This is distinct from the event horizon (r₊ &lt; 2M for a₊ spinning black hole).</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Spin parameter χ = 0.9 default:</strong> Adjustable via CLI flag. At χ → 1 (extreme Kerr), the event horizon shrinks and the ergosphere grows, dramatically asymmetrizing the ray deflection pattern.</span></div>
+        </div>
+        <div class="eq-block" style="margin-top:14px">
+          <div class="eq-label">Kerr conserved quantities</div>
+          E = −(g_tt · tdot + g_tφ · φdot)   <span style="color:var(--text-3)">← energy per unit mass</span><br>
+          L =  g_φφ · φdot + g_tφ · tdot     <span style="color:var(--text-3)">← angular momentum</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">⚡</span><span class="card-title">Adaptive RK45 Integrator (Dormand-Prince)</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">The third simulation (<code style="color:var(--accent);font-size:0.8rem">2DLensingKerr45.py</code>) replaces the fixed-step RK4 with a <strong style="color:var(--text)">Dormand-Prince RK45 adaptive integrator</strong> — the same algorithm used by MATLAB's <code style="font-size:0.8rem;color:var(--accent)">ode45</code> and SciPy's <code style="font-size:0.8rem;color:var(--accent)">solve_ivp</code>. Each ray gets its own independently adapting step size.</p>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>7-stage, 5th-order:</strong> Computes 7 derivative evaluations per step. The 4th and 5th-order solutions are compared to estimate local error — if error exceeds tolerance, the step is retried at a smaller size.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Per-ray step size (ray[13]):</strong> Each ray stores its current step size as state. Rays near the event horizon automatically shrink their step to maintain accuracy; rays far away take large efficient steps. No global timestep needed.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Tolerance control:</strong> Default tol = 1e-8. The PI controller clamps step scaling between 0.2× and 5× to prevent erratic jumps. Step floor at 1e-6 prevents infinite loops near singularities.</span></div>
+        </div>
+        <div class="eq-block" style="margin-top:14px">
+          <div class="eq-label">Step size update rule (PI controller)</div>
+          scale   = 0.9 × (tol / err)^0.2<br>
+          scale   = clamp(scale, 0.2, 5.0)<br>
+          dl_new  = max(dl × scale, 1e-6)
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🌐</span><span class="card-title">3D Gravitational Lensing</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">The final simulation lifts everything into full 3D — a 20×20 grid of rays (400 total) shot through 3D space at a Schwarzschild black hole, each bending in its own orbital plane. Three integrators are available at runtime.</p>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Orbital plane per ray:</strong> Each ray's motion is confined to the plane defined by its initial position and velocity vectors. The simulation finds the two basis vectors (e₁, e₂) of that plane and integrates in 2D within it, then projects back to 3D for rendering.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Flamm's Paraboloid:</strong> A cyan wireframe surface of revolution showing the actual shape of curved spacetime in the equatorial plane — the visual you see in GR textbooks. Equation: W = −2√(rₛ(r − rₛ)), plotted from rₛ to 6×10¹⁰ m.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Three integrators selectable by CLI:</strong> Cash-Karp RK45 (default), Dormand-Prince RK45, and fixed-step RK4 — so accuracy vs. speed tradeoffs can be tested in real time.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Interactive:</strong> Scroll to zoom, drag to rotate the 3D view. Animations can be saved as GIF with <code style="font-size:0.8rem;color:var(--accent)">--save</code> flag.</span></div>
+        </div>
+        <div class="eq-block" style="margin-top:14px">
+          <div class="eq-label">Flamm's paraboloid (embedded spacetime geometry)</div>
+          W(r) = −2√(rₛ · (r − rₛ))  &nbsp;&nbsp;  r > rₛ<br>
+          X = r·cos(θ),  Y = r·sin(θ),  Z = W(r)
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
       <div class="card-head"><span class="card-icon">🚀</span><span class="card-title">What Came Next</span></div>
       <div class="card-body">
         <div class="result-box">
@@ -216,10 +292,14 @@
           <span class="pill">Python</span>
           <span class="pill">Euler Method</span>
           <span class="pill">RK4</span>
+          <span class="pill">Dormand-Prince RK45</span>
+          <span class="pill">Cash-Karp RK45</span>
           <span class="pill">Schwarzschild Metric</span>
-          <span class="pill">Geodesics</span>
-          <span class="pill">Polar Coordinates</span>
+          <span class="pill">Kerr Metric</span>
+          <span class="pill">Null Geodesics</span>
+          <span class="pill">Flamm's Paraboloid</span>
           <span class="pill">Matplotlib</span>
+          <span class="pill">NumPy</span>
         </div>
       </div>
     </div>

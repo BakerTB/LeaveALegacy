@@ -19,12 +19,14 @@
       --text-2:       #8B9B8F;
       --text-3:       #4A6B55;
       --accent:       #8BA8A0;
+      --l1:           #6BBF8A;
+      --l2:           #D4A843;
+      --l3:           #9875c8;
       --wood:         #1E3A28;
       --wood-hi:      #3D6B4E;
     }
     html { scroll-behavior: smooth; }
     body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
-
     body::before { content: ''; position: fixed; inset: 0; z-index: 998; pointer-events: none; opacity: 0.038; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; }
     .vignette { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(ellipse 110% 110% at 50% 50%, transparent 38%, rgba(7,19,11,0.65) 100%); }
     .blob { position: fixed; border-radius: 50%; filter: blur(160px); pointer-events: none; z-index: 0; }
@@ -36,31 +38,96 @@
     .nav-back { font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; padding: 7px 14px; border: 1px solid var(--border-hi); border-radius: 8px; background: rgba(139,168,160,0.06); transition: all 0.2s; }
     .nav-back:hover { color: var(--text); border-color: var(--accent); background: rgba(139,168,160,0.12); }
 
-    .hero { position: relative; z-index: 1; padding: 130px 24px 60px; text-align: center; max-width: 800px; margin: 0 auto; }
+    .hero { position: relative; z-index: 1; padding: 130px 24px 60px; text-align: center; max-width: 820px; margin: 0 auto; }
     .cat-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 20px; padding: 5px 14px; border: 1px solid rgba(139,168,160,0.30); border-radius: 100px; background: rgba(139,168,160,0.07); }
     .cat-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
-    .in-progress-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-3); font-weight: 600; margin-bottom: 16px; padding: 4px 12px; border: 1px solid rgba(127,163,107,0.20); border-radius: 100px; background: rgba(127,163,107,0.05); }
     .hero-title { font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 5.5vw, 3.4rem); font-weight: 700; letter-spacing: 0.02em; line-height: 1.15; margin-bottom: 16px; color: var(--text); }
-    .hero-sub { color: var(--text-2); font-size: 1.05rem; max-width: 520px; margin: 0 auto 36px; line-height: 1.7; }
+    .hero-sub { color: var(--text-2); font-size: 1.05rem; max-width: 580px; margin: 0 auto 36px; line-height: 1.7; }
+    .stats-row { display: flex; gap: 0; justify-content: center; border: 1px solid var(--border-hi); border-radius: 12px; background: var(--surface-card); backdrop-filter: blur(12px); overflow: hidden; max-width: 520px; margin: 0 auto; box-shadow: inset 0 1px 0 rgba(139,168,160,0.08), 0 6px 28px rgba(0,0,0,0.45); }
+    .stat { padding: 16px 28px; text-align: center; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-val { display: block; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .stat-lbl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
 
     .content { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 60px 24px 100px; display: flex; flex-direction: column; gap: 24px; }
 
     .card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 8px 30px rgba(0,0,0,0.45); position: relative; }
     .card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(127,163,107,0.04); border-radius: 11px; pointer-events: none; z-index: 0; }
+
+    /* Layer-colored card accents */
+    .card-l1 { border-color: rgba(107,191,138,0.22); }
+    .card-l1 .card-head { border-bottom-color: rgba(107,191,138,0.18); }
+    .card-l2 { border-color: rgba(212,168,67,0.22); }
+    .card-l2 .card-head { border-bottom-color: rgba(212,168,67,0.18); }
+    .card-l3 { border-color: rgba(152,117,200,0.22); }
+    .card-l3 .card-head { border-bottom-color: rgba(152,117,200,0.18); }
+
     .card-head { display: flex; align-items: center; gap: 14px; padding: 20px 24px; border-bottom: 1px solid var(--border); position: relative; z-index: 1; }
     .card-icon { font-size: 20px; }
     .card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .card-badge { margin-left: auto; font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase; font-weight: 700; padding: 3px 10px; border-radius: 20px; border: 1px solid; }
+    .badge-l1 { color: var(--l1); border-color: rgba(107,191,138,0.35); background: rgba(107,191,138,0.08); }
+    .badge-l2 { color: var(--l2); border-color: rgba(212,168,67,0.35); background: rgba(212,168,67,0.08); }
+    .badge-l3 { color: var(--l3); border-color: rgba(152,117,200,0.35); background: rgba(152,117,200,0.08); }
     .card-body { padding: 22px 24px; position: relative; z-index: 1; }
 
-    .hi-list { display: flex; flex-direction: column; gap: 12px; }
+    .layer-intro { font-size: 0.92rem; color: var(--text-2); line-height: 1.75; margin-bottom: 18px; }
+
+    .hi-list { display: flex; flex-direction: column; gap: 14px; }
     .hi { display: flex; gap: 12px; align-items: flex-start; }
-    .hi-arrow { color: var(--accent); font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+    .hi-arrow { font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+    .hi-arrow-l1 { color: var(--l1); }
+    .hi-arrow-l2 { color: var(--l2); }
+    .hi-arrow-l3 { color: var(--l3); }
+    .hi-arrow-def { color: var(--accent); }
     .hi-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.7; }
     .hi-text strong { color: var(--text); font-weight: 600; }
 
-    .callout { background: rgba(22,51,34,0.55); border: 1px solid var(--border); border-left: 3px solid var(--text-3); border-radius: 0 12px 12px 0; padding: 20px 24px; backdrop-filter: blur(8px); }
-    .callout-lbl { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-3); font-weight: 600; margin-bottom: 9px; }
-    .callout p { color: var(--text-2); font-size: 0.9rem; line-height: 1.7; }
+    /* Code / pseudocode block */
+    .code-block {
+      background: rgba(7,19,11,0.85);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.9;
+      margin-top: 14px;
+      overflow-x: auto;
+    }
+    .code-label {
+      font-family: 'Inter', sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      margin-bottom: 10px;
+    }
+    .c-green  { color: var(--l1); }
+    .c-yellow { color: var(--l2); }
+    .c-purple { color: var(--l3); }
+    .c-dim    { color: var(--text-3); }
+
+    /* Stat cards grid */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 4px; }
+    .stat-card { background: var(--surface-2); border: 1px solid var(--border); border-radius: 11px; padding: 16px 18px; }
+    .stat-card-name { font-size: 0.78rem; font-weight: 700; margin-bottom: 6px; }
+    .stat-card-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.62; }
+
+    /* Tier table */
+    .tier-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-top: 6px; }
+    .tier-table th { text-align: left; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+    .tier-table td { padding: 10px 12px; border-bottom: 1px solid rgba(127,163,107,0.06); color: var(--text-2); vertical-align: top; }
+    .tier-table tr:last-child td { border-bottom: none; }
+    .tier-num { font-weight: 700; color: var(--text); font-size: 1rem; }
+
+    .result-box { background: rgba(139,168,160,0.04); border: 1.5px solid rgba(139,168,160,0.20); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 20px 24px; }
+    .result-lbl { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .result-text { font-size: 0.875rem; color: var(--text); line-height: 1.78; }
+
+    .pills-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { font-size: 11.5px; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(139,168,160,0.28); color: var(--accent); font-weight: 500; background: rgba(139,168,160,0.06); }
 
     .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border: 1px solid var(--border-hi); border-radius: 10px; color: var(--text-2); font-size: 13px; font-weight: 500; text-decoration: none; background: rgba(13,30,20,0.7); transition: all 0.2s; margin-top: 16px; backdrop-filter: blur(8px); }
     .back-btn:hover { border-color: var(--accent); color: var(--text); }
@@ -77,48 +144,239 @@
 
   <nav class="top-nav">
     <a href="index.html" class="nav-brand">Truitt Baker</a>
-    <a href="projects.html" class="nav-back">← All Projects</a>
+    <a href="index.html" class="nav-back">← Home</a>
   </nav>
 
   <div class="hero">
     <div class="cat-badge"><div class="cat-dot"></div>Software &amp; STEM</div>
-    <div class="in-progress-badge">🌱 In Progress</div>
     <h1 class="hero-title">Poker Bot</h1>
-    <p class="hero-sub">An automated poker-playing program — currently under active development. Full details coming soon.</p>
+    <p class="hero-sub">A three-layer exploit bot that plays live Texas Hold'em on a real server — tracking opponent tendencies, weaponizing their leaks, and poisoning their hand models to stay systematically unpredictable.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-val">3</span><span class="stat-lbl">Strategy Layers</span></div>
+      <div class="stat"><span class="stat-val">Live</span><span class="stat-lbl">Server Play</span></div>
+      <div class="stat"><span class="stat-val">4</span><span class="stat-lbl">Streets</span></div>
+      <div class="stat"><span class="stat-val">∞</span><span class="stat-lbl">Hands</span></div>
+    </div>
   </div>
 
   <div class="content">
 
+    <!-- Overview -->
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">What It Will Do</span></div>
+      <div class="card-head"><span class="card-icon">♠️</span><span class="card-title">Overview</span></div>
       <div class="card-body">
         <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">A <strong>bot that plays poker automatically</strong> — making betting, folding, and raising decisions based on programmed strategy parameters.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Draws on the same analytical thinking used in the <strong>Options Trading Bot</strong> — finding edge through systematic decision-making rather than intuition.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Poker is a <strong>game of incomplete information</strong> — the bot must make decisions under uncertainty using expected value calculations and hand strength assessment.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Currently in active development. Full project writeup will be added when complete.</span></div>
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span><span class="hi-text">Built for <strong>poker.mineblue.org</strong> — a live Texas Hold'em server where multiple bots compete against each other in real time via a REST API.</span></div>
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span><span class="hi-text">The bot uses <strong>three independent strategy layers</strong> that work together: one observes, one exploits, one deceives. All three run on every decision.</span></div>
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span><span class="hi-text">Written entirely in Python with no external poker libraries — including a <strong>custom hand evaluator</strong> that ranks any 5–7 card combination from high card through straight flush.</span></div>
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span><span class="hi-text">Connects to the server via HTTP, <strong>joins a table, polls for its turn</strong>, fetches full game state, computes a decision, and posts the action — all in a tight polling loop.</span></div>
         </div>
       </div>
     </div>
 
-    <div class="card rev">
-      <div class="card-head"><span class="card-icon">🧠</span><span class="card-title">The Challenge of Poker AI</span></div>
+    <!-- Shoutout -->
+    <div class="card rev" style="border-color: rgba(212,168,67,0.35); background: rgba(22,51,34,0.6);">
+      <div class="card-head" style="border-bottom-color: rgba(212,168,67,0.22);">
+        <span class="card-icon">🏆</span>
+        <span class="card-title" style="color: var(--l2);">Special Thanks — The Donors</span>
+        <span class="card-badge badge-l2" style="margin-left:auto">Hall of Fame</span>
+      </div>
       <div class="card-body">
+        <p class="layer-intro" style="margin-bottom:18px">No poker bot gets to flex without worthy opponents. This one had three:</p>
         <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Expected Value (EV):</strong> Every action in poker has an EV. The bot needs to calculate pot odds, implied odds, and opponent fold equity to make +EV decisions consistently.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Hand strength evaluation:</strong> Accurately assessing current hand rank and equity against likely opponent ranges — the mathematical foundation of every decision.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Range-based thinking:</strong> Rather than assigning one specific hand to an opponent, the bot reasons about the full set of possible hands — a more realistic and powerful model.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Bluffing and balance:</strong> Even bots need to bluff at the right frequency — otherwise opponents can exploit a "only bets strong hands" strategy by simply folding.</span></div>
+          <div class="hi"><span class="hi-arrow" style="color:var(--l2)">→</span><span class="hi-text"><strong style="color:var(--l2)">Zaphney</strong> — A generous soul whose bot apparently had a deep philosophical belief in calling every river bet. My bot appreciates the charity. Your stack lives on in my win rate.</span></div>
+          <div class="hi"><span class="hi-arrow" style="color:var(--l2)">→</span><span class="hi-text"><strong style="color:var(--l2)">Aiden</strong> — Truly one of the PostAP poker bots of all time. The sheer consistency with which it donated chips was, honestly, impressive in its own way. A reliable income stream.</span></div>
+          <div class="hi"><span class="hi-arrow" style="color:var(--l2)">→</span><span class="hi-text"><strong style="color:var(--l2)">Jeffery</strong> — The final piece of the funding puzzle. Between Layer 2's overbets and Layer 3's delayed bombs, Jeff's bot never really stood a chance, but it showed up every hand anyway. Respect.</span></div>
+        </div>
+        <div class="result-box" style="margin-top:20px; border-left-color: var(--l2);">
+          <div class="result-lbl" style="color:var(--l2)">For real though</div>
+          <div class="result-text">Genuinely — thank you to everyone who was in that PostAP class, including you, Dr. Lena. I think we built something worth being proud of, both this year and the last. It's been one of the most creative and genuinely fun things I've done in school, and I can't wait to see what you all go on to do. 🃏</div>
         </div>
       </div>
     </div>
 
-    <div class="callout rev">
-      <div class="callout-lbl">Development Status</div>
-      <p>This project is currently being built. The description and technical writeup will be updated here as it progresses. Check back soon — or explore the other twelve projects in the meantime.</p>
+    <!-- Layer 1 -->
+    <div class="card card-l1 rev">
+      <div class="card-head">
+        <span class="card-icon">📊</span>
+        <span class="card-title">Layer 1 — Stat Tracking</span>
+        <span class="card-badge badge-l1">Observe</span>
+      </div>
+      <div class="card-body">
+        <p class="layer-intro">Before exploiting anyone, the bot needs to know <em>who</em> it's up against. Layer 1 builds a behavioral profile for every opponent by watching their actions across every hand and updating a running stat sheet.</p>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-card-name" style="color:var(--l1)">Fold-to-3bet Rate</div>
+            <div class="stat-card-desc">How often does this player fold when re-raised preflop? A rate above ~55% marks them as a target for frequent 3-bets, regardless of hole cards.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-name" style="color:var(--l1)">C-bet Frequency</div>
+            <div class="stat-card-desc">When we check the flop, do they bet? High c-betters get check-raised or trapped. Low c-betters get attacked when we have any piece of the board.</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-name" style="color:var(--l1)">River Call Rate</div>
+            <div class="stat-card-desc">How often do they call a bet on the river? A rate ≥ 60% marks a "calling station" — the ideal target for massive overbets with strong hands.</div>
+          </div>
+        </div>
+        <div class="code-block" style="margin-top:18px">
+          <div class="code-label">Stat lookup logic</div>
+          <span class="c-dim"># Returns default estimate if we have &lt; 3 data points</span><br>
+          fold_to_3bet(pid)  = <span class="c-green">fold_3bet / face_3bet</span>  <span class="c-dim">if face_3bet &gt;= 3 else 0.45</span><br>
+          cbet_freq(pid)     = <span class="c-green">cbet_took / cbet_opp</span>   <span class="c-dim">if cbet_opp  &gt;= 3 else 0.60</span><br>
+          river_call_rate(pid)= <span class="c-green">call_river / face_river</span> <span class="c-dim">if face_river &gt;= 3 else 0.50</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-3);margin-top:10px">Stats are inferred from state snapshots — no hand-history files needed. The bot reconciles pre/post-street contributions to detect folds, calls, and raises by other players even when they aren't the one acting.</p>
+      </div>
     </div>
 
-    <a href="projects.html" class="back-btn rev">← Back to All Projects</a>
+    <!-- Layer 2 -->
+    <div class="card card-l2 rev">
+      <div class="card-head">
+        <span class="card-icon">⚔️</span>
+        <span class="card-title">Layer 2 — Exploit Leaks</span>
+        <span class="card-badge badge-l2">Attack</span>
+      </div>
+      <div class="card-body">
+        <p class="layer-intro">Once the stats are reliable, Layer 2 turns tendencies into targets. Each opponent's biggest weakness becomes the bot's primary line of attack against them.</p>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow hi-arrow-l2">→</span>
+            <span class="hi-text"><strong>Attack folders preflop:</strong> If fold-to-3bet ≥ 55%, the bot 3-bets that player's opens with a much wider range than normal — turning marginal holdings into profitable bluffs purely because the opponent folds too often.</span>
+          </div>
+          <div class="hi"><span class="hi-arrow hi-arrow-l2">→</span>
+            <span class="hi-text"><strong>Overbet rivers vs calling stations:</strong> Against opponents with call rate ≥ 60%, bets on the river are sized 1.4–2× pot instead of the standard 0.75×. Calling stations can't fold correctly — so when the bot has a strong hand, it charges maximum.</span>
+          </div>
+          <div class="hi"><span class="hi-arrow hi-arrow-l2">→</span>
+            <span class="hi-text"><strong>Relentless c-betting vs passive opponents:</strong> If the bot raised preflop and the opponent rarely bets when checked to (low c-bet frequency), the bot fires a continuation bet on the flop regardless of whether it connected — taking down pots with air.</span>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-label">River sizing decision</div>
+          <span class="c-dim">if</span> hr &gt;= 5 <span class="c-dim">and</span> to_call == 0:<br>
+          &nbsp;&nbsp;<span class="c-dim">if</span> caller_rate &gt;= 0.60: <span class="c-dim">→</span> <span class="c-yellow">overbet(1.4 – 2.0 × pot)</span><br>
+          &nbsp;&nbsp;<span class="c-dim">else:</span>                  <span class="c-dim">→</span> standard bet (0.85 × pot)
+        </div>
+      </div>
+    </div>
+
+    <!-- Layer 3 -->
+    <div class="card card-l3 rev">
+      <div class="card-head">
+        <span class="card-icon">🎭</span>
+        <span class="card-title">Layer 3 — Model Poisoning</span>
+        <span class="card-badge badge-l3">Deceive</span>
+      </div>
+      <div class="card-body">
+        <p class="layer-intro">A bot that exploits predictably becomes predictable itself. Layer 3 makes the bot's behavior look random to opponents — but it's actually <em>deterministic randomness</em>, seeded per hand and street so decisions stay consistent across retries without being repeatable across hands.</p>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow hi-arrow-l3">→</span>
+            <span class="hi-text"><strong>MD5-keyed PRNG:</strong> Every decision point gets a stable float in [0,1) derived from <code style="color:var(--l3);font-size:0.8rem">MD5(hand_id + ":" + street + ":" + seat)</code>. Same hand, same street, same result — but completely different the next hand.</span>
+          </div>
+          <div class="hi"><span class="hi-arrow hi-arrow-l3">→</span>
+            <span class="hi-text"><strong>Flop check-traps (~30%):</strong> When holding a very strong hand on the flop (flush or better), the bot checks instead of betting 30% of the time. The opponent bets into the trap on the turn, then gets raised or bombed — breaking the assumption that the bot always bets strong hands immediately.</span>
+          </div>
+          <div class="hi"><span class="hi-arrow hi-arrow-l3">→</span>
+            <span class="hi-text"><strong>Delayed turn bombs:</strong> When the bot checked the flop (trap or no-bet), it comes out firing 0.9–1.2× pot on the turn even with moderate holdings. Opponents can't distinguish the trap from a late-street bluff.</span>
+          </div>
+          <div class="hi"><span class="hi-arrow hi-arrow-l3">→</span>
+            <span class="hi-text"><strong>Randomized open sizing:</strong> Preflop open raises vary between 0.8–1.2× pot based on the PRNG. Strong hands don't always open bigger — eliminating the standard "bet-size tells" that most bots leak.</span>
+          </div>
+        </div>
+        <div class="code-block">
+          <div class="code-label">PRNG seed</div>
+          key = <span class="c-purple">f"{hand_id}:{street}:{seat}"</span><br>
+          r   = int(MD5(key).hexdigest()[:8], 16) / 0xFFFF_FFFF<br><br>
+          <span class="c-dim"># Same hand → same r on every poll (idempotent)</span><br>
+          <span class="c-dim"># Next hand  → completely different r</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hand Evaluator -->
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🃏</span><span class="card-title">Custom Hand Evaluator</span></div>
+      <div class="card-body">
+        <p class="layer-intro">Rather than importing a poker library, the bot uses a hand evaluator written from scratch. It ranks any 5-or-more-card combination and returns a comparable tuple used for all decision logic.</p>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span><span class="hi-text">Handles all nine categories from high card (0) through straight flush (8). Returns a ranked tuple so hands can be directly compared with Python's <code style="font-size:0.8rem;color:var(--accent)">&gt;</code> operator.</span></div>
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span><span class="hi-text">Correctly handles Ace-low straights (A-2-3-4-5 "wheel"), flush detection across any suit, and full-house vs. trips disambiguation via <code style="font-size:0.8rem;color:var(--accent)">Counter</code> on rank frequencies.</span></div>
+        </div>
+        <div class="code-block" style="margin-top:14px">
+          <div class="code-label">Hand categories</div>
+          0 <span class="c-dim">— High card</span>&nbsp;&nbsp;&nbsp;1 <span class="c-dim">— Pair</span>&nbsp;&nbsp;&nbsp;2 <span class="c-dim">— Two pair</span>&nbsp;&nbsp;&nbsp;3 <span class="c-dim">— Trips</span><br>
+          4 <span class="c-dim">— Straight</span>&nbsp;&nbsp;&nbsp;5 <span class="c-dim">— Flush</span>&nbsp;&nbsp;&nbsp;6 <span class="c-dim">— Full house</span>&nbsp;&nbsp;&nbsp;7 <span class="c-dim">— Quads</span>&nbsp;&nbsp;&nbsp;8 <span class="c-dim">— Straight flush</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preflop Tier System -->
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🏆</span><span class="card-title">Preflop Tier System</span></div>
+      <div class="card-body">
+        <p class="layer-intro">Rather than memorizing a lookup table of every preflop hand, the bot classifies hole cards into five tiers based on rank, pairing, and suitedness. This drives open sizing, 3-bet thresholds, and all-in thresholds.</p>
+        <table class="tier-table">
+          <thead><tr><th>Tier</th><th>Label</th><th>Example Hands</th><th>Default Action</th></tr></thead>
+          <tbody>
+            <tr><td><span class="tier-num" style="color:var(--text-3)">0</span></td><td>Muck</td><td>72o, 83o, 94o</td><td>Fold (check if free)</td></tr>
+            <tr><td><span class="tier-num">1</span></td><td>Marginal</td><td>Suited connectors (65s), low pairs</td><td>Call small opens, fold big ones</td></tr>
+            <tr><td><span class="tier-num">2</span></td><td>Decent</td><td>KJo, AT, medium pairs (77–88)</td><td>Open for 0.75× pot, call medium</td></tr>
+            <tr><td><span class="tier-num">3</span></td><td>Strong</td><td>AQ, AJs, JJ, TT, 99</td><td>Open 0.8–1.2× pot, 3-bet vs folders</td></tr>
+            <tr><td><span class="tier-num" style="color:var(--l2)">4</span></td><td>Premium</td><td>AA, KK, QQ, AK</td><td>Always 3-bet, go all-in if committed</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Street-by-street logic -->
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🗺️</span><span class="card-title">Street-by-Street Decision Logic</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span>
+            <span class="hi-text"><strong>Preflop:</strong> Classify hand tier → decide to fold, call, open, or 3-bet. If facing a raise with a tier-4 hand, always 3-bet. If facing a raise with a tier-3 hand, 3-bet only if the target has a high fold-to-3bet rate (Layer 2).</span>
+          </div>
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span>
+            <span class="hi-text"><strong>Flop:</strong> Check for trap opportunity (Layer 3). If betting, size at 50–70% pot for made hands. Bluff c-bet ~35% of the time as the preflop aggressor. Check-raise with strong hands ~40% of the time when facing a flop bet.</span>
+          </div>
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span>
+            <span class="hi-text"><strong>Turn:</strong> If trapped on the flop, fire 0.9–1.2× pot delayed bomb (Layer 3). Otherwise continue value-betting strong hands and check/fold weaker ones.</span>
+          </div>
+          <div class="hi"><span class="hi-arrow hi-arrow-def">→</span>
+            <span class="hi-text"><strong>River:</strong> Max value mode — size based on opponent call rate (Layer 2). Bluff ~25% of the time as the preflop aggressor with one pair on the river. Check-raise strong hands ~35% when facing a river bet.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">✅</span><span class="card-title">Result</span></div>
+      <div class="card-body">
+        <div class="result-box">
+          <div class="result-lbl">Key Result</div>
+          <div class="result-text">A fully autonomous poker bot that connects to a live server, identifies opponent weaknesses across every hand, exploits them with targeted bet sizing, and actively masks its own patterns with deterministic randomness. The three-layer architecture separates observation, exploitation, and deception into clean independent systems — meaning each layer can be tuned or replaced without breaking the others.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tech Stack -->
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-body">
+        <div class="pills-row">
+          <span class="pill">Python</span>
+          <span class="pill">REST API (requests)</span>
+          <span class="pill">Custom Hand Evaluator</span>
+          <span class="pill">Stat Tracking</span>
+          <span class="pill">MD5 PRNG</span>
+          <span class="pill">Exploit Strategy</span>
+          <span class="pill">Texas Hold'em</span>
+          <span class="pill">poker.mineblue.org</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-btn rev">← Back to Home</a>
+
   </div>
 
   <script>

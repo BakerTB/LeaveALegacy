@@ -92,11 +92,11 @@
   <div class="hero">
     <div class="cat-badge"><div class="cat-dot"></div>Software &amp; STEM</div>
     <h1 class="hero-title">Hangman Game<br>&amp; Solver GUI</h1>
-    <p class="hero-sub">A Python GUI that plays Hangman and lets two different solving algorithms compete — one using pure letter frequency, the other using a more intelligent pattern approach.</p>
+    <p class="hero-sub">A full Pygame Hangman game with a 2,986-word CSV word bank, custom word input, and a built-in solver that auto-plays using letter frequency. Started in Java, then rebuilt in Python with a drawn GUI.</p>
     <div class="stats-row">
-      <div class="stat"><span class="stat-val">6</span><span class="stat-lbl">Hours</span></div>
-      <div class="stat"><span class="stat-val">2 wks</span><span class="stat-lbl">Built</span></div>
-      <div class="stat"><span class="stat-val">2</span><span class="stat-lbl">Solvers</span></div>
+      <div class="stat"><span class="stat-val">2,986</span><span class="stat-lbl">Word Bank</span></div>
+      <div class="stat"><span class="stat-val">7</span><span class="stat-lbl">Wrong Guesses</span></div>
+      <div class="stat"><span class="stat-val">Java+Py</span><span class="stat-lbl">Languages</span></div>
     </div>
   </div>
 
@@ -106,39 +106,33 @@
       <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
       <div class="card-body">
         <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Programmed and designed a <strong>full Hangman game with a graphical GUI in Python</strong> — then built two different solver algorithms that can play and be watched in real time.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">The core question: <strong>how do you optimally solve Hangman?</strong> Is it pure letter frequency? Pattern matching? The project explores both methods and compares their performance.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Built Fall 2024 — 3 hrs/week over 2 weeks.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Started in <strong>Java</strong> as a terminal-based Hangman with text-drawn ASCII art figure and Scanner input — then rebuilt from scratch in <strong>Python with Pygame</strong> for a full graphical experience.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">The Pygame version draws the hangman figure procedurally using <code style="font-size:0.8rem;color:var(--accent)">pygame.draw.line</code> and <code style="font-size:0.8rem;color:var(--accent)">pygame.draw.circle</code> — gallows, rope, head, body, arms, legs, and X-eyes all drawn in code.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Words are pulled from a <strong>2,986-word CSV file</strong> at random each game. Up to <strong>7 wrong guesses</strong> allowed before game over.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">The Options menu lets you switch to <strong>custom word mode</strong> — type in any word and pass the keyboard to a friend to guess. Supports spaces (multi-word phrases work too).</span></div>
         </div>
       </div>
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🤖</span><span class="card-title">Two Solvers Compared</span></div>
+      <div class="card-head"><span class="card-icon">🤖</span><span class="card-title">The Solver — Auto-Play Mode</span></div>
       <div class="card-body">
-        <div class="solver-grid">
-          <div class="solver-card">
-            <div class="solver-label">Method 01</div>
-            <div class="solver-name">Bot Solver</div>
-            <div class="solver-desc">Uses letter frequency data from English word lists to rank guesses. Starts with the most common letters (E, T, A, O, I...) and works systematically through likelihood — no word-pattern context used.</div>
-          </div>
-          <div class="solver-card">
-            <div class="solver-label">Method 02</div>
-            <div class="solver-name">AI Solver</div>
-            <div class="solver-desc">Pattern-aware solver that cross-references the known letter positions with a dictionary to narrow possible words at each step. Guesses based on which letters appear most often in the remaining candidate words — not just English overall.</div>
-          </div>
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">The "Play Solver" button launches <code style="font-size:0.8rem;color:var(--accent)">hangmanSolver()</code> — an automated player that guesses letters one at a time and visualizes each step in real time at 500ms intervals so you can watch the strategy unfold.</p>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Strategy:</strong> Uses the hardcoded English letter frequency string <code style="font-size:0.8rem;color:var(--accent)">"etaoinshrdlcumwfgypbvkjxqz"</code> — guesses the most statistically common letters in English first, working through the alphabet by frequency rank.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>letter_tally():</strong> The codebase also includes a function that counts actual letter frequency across all 2,986 words in the CSV — computing how often each letter appears in the specific word bank. This gives a game-specific frequency ranking vs. general English.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Visual:</strong> The same <code style="font-size:0.8rem;color:var(--accent)">displayHangman()</code> function updates after each guess — you watch the figure build up in real time as the solver makes wrong guesses, making the strategy visible and stakes clear.</span></div>
         </div>
       </div>
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🔬</span><span class="card-title">Why This Is a Real CS Problem</span></div>
+      <div class="card-head"><span class="card-icon">☕</span><span class="card-title">Java Version — Where It Started</span></div>
       <div class="card-body">
         <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Information theory at its core:</strong> Each guess reveals information about the hidden word. The optimal solver maximizes expected information gain per guess — exactly what the AI solver approximates.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Search space reduction:</strong> The AI solver's power comes from pruning — with every reveal, the set of possible words shrinks dramatically. Smart guessing makes this shrink faster.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>The Bot vs. AI gap:</strong> The Bot's flaw is using global frequency data rather than the frequency within the filtered word set. The AI fixes this by recomputing per step.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Real-time visualization:</strong> Watching both solvers play side-by-side in the GUI makes the strategy difference immediately visible — you see the AI narrow in faster.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">The original <code style="font-size:0.8rem;color:var(--accent)">Hangman.java</code> file runs entirely in the terminal. Takes a hardcoded word ("Hello"), prints ASCII art stages, and uses <code style="font-size:0.8rem;color:var(--accent)">Scanner</code> for letter-by-letter input.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Supports <strong>9 wrong guess stages</strong> (vs Python's 7) with progressively more detailed ASCII art — gallows → head → torso → left arm → right arm → left leg → right leg → expression.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">The Java version came first as a <strong>learning exercise in object-oriented design</strong> — the <code style="font-size:0.8rem;color:var(--accent)">Hangman</code> class encapsulates word state and the <code style="font-size:0.8rem;color:var(--accent)">condition(String letter)</code> method handles all matching logic.</span></div>
         </div>
       </div>
     </div>
@@ -148,10 +142,11 @@
       <div class="card-body">
         <div class="pills-row">
           <span class="pill">Python</span>
-          <span class="pill">Tkinter GUI</span>
-          <span class="pill">Dictionary / Word Lists</span>
-          <span class="pill">Letter Frequency Analysis</span>
-          <span class="pill">Pattern Matching</span>
+          <span class="pill">Pygame</span>
+          <span class="pill">Java</span>
+          <span class="pill">CSV Word Bank</span>
+          <span class="pill">Letter Frequency</span>
+          <span class="pill">Procedural Drawing</span>
           <span class="pill">Algorithm Design</span>
         </div>
       </div>

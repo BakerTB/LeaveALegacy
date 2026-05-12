@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chrome Ad Blocker Extension — Truitt Baker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:           #07130B;
+      --surface:      #0D1E14;
+      --surface-2:    #163322;
+      --surface-card: rgba(22,51,34,0.75);
+      --border:       rgba(127,163,107,0.15);
+      --border-hi:    rgba(107,191,138,0.32);
+      --text:         #D7E2D3;
+      --text-2:       #8B9B8F;
+      --text-3:       #4A6B55;
+      --accent:       #6BBF8A;
+      --wood:         #1E3A28;
+      --wood-hi:      #3D6B4E;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 998; pointer-events: none; opacity: 0.038; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; }
+
+    .blob { position: fixed; border-radius: 50%; filter: blur(160px); pointer-events: none; z-index: 0; }
+    .blob-1 { width: 650px; height: 650px; background: rgba(107,191,138,0.07); top: -240px; right: -220px; }
+    .blob-2 { width: 450px; height: 450px; background: rgba(45,90,61,0.05); bottom: 12%; left: -180px; }
+
+    .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 14px 40px; background: rgba(7,19,11,0.84); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+    .nav-brand { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; color: var(--text); text-decoration: none; letter-spacing: 0.08em; }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; padding: 7px 14px; border: 1px solid var(--border-hi); border-radius: 8px; background: rgba(107,191,138,0.06); transition: all 0.2s; }
+    .nav-back:hover { color: var(--text); border-color: var(--accent); background: rgba(107,191,138,0.12); }
+
+    .hero { position: relative; z-index: 1; padding: 130px 24px 60px; text-align: center; max-width: 800px; margin: 0 auto; }
+    .cat-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 20px; padding: 5px 14px; border: 1px solid rgba(120,192,104,0.3); border-radius: 100px; background: rgba(120,192,104,0.07); }
+    .cat-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+    .hero-title { font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 5.5vw, 3.4rem); font-weight: 700; letter-spacing: 0.02em; line-height: 1.15; margin-bottom: 16px; color: var(--text); }
+    .hero-sub { color: var(--text-2); font-size: 1.05rem; max-width: 520px; margin: 0 auto 36px; line-height: 1.7; }
+    .stats-row { display: flex; gap: 0; justify-content: center; border: 1px solid var(--border-hi); border-radius: 12px; background: var(--surface-card); backdrop-filter: blur(12px); overflow: hidden; max-width: 480px; margin: 0 auto; box-shadow: inset 0 1px 0 rgba(107,191,138,0.08), 0 6px 28px rgba(0,0,0,0.45); }
+    .stat { padding: 16px 28px; text-align: center; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-val { display: block; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .stat-lbl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+
+    .content { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 60px 24px 100px; display: flex; flex-direction: column; gap: 24px; }
+
+    .card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 8px 30px rgba(0,0,0,0.45); position: relative; }
+    .card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(127,163,107,0.04); border-radius: 11px; pointer-events: none; z-index: 0; }
+    .card-head { display: flex; align-items: center; gap: 14px; padding: 20px 24px; border-bottom: 1px solid var(--border); position: relative; z-index: 1; }
+    .card-icon { font-size: 20px; }
+    .card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .card-body { padding: 22px 24px; position: relative; z-index: 1; }
+
+    .hi-list { display: flex; flex-direction: column; gap: 12px; }
+    .hi { display: flex; gap: 12px; align-items: flex-start; }
+    .hi-arrow { color: var(--accent); font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+    .hi-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.65; }
+    .hi-text strong { color: var(--text); font-weight: 600; }
+
+    .eq-block { background: var(--surface-2); border: 1px solid var(--border-hi); border-radius: 10px; padding: 16px 20px; font-family: 'Courier New', monospace; font-size: 12.5px; color: var(--text); line-height: 1.85; }
+    .eq-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+
+    .rule-grid { display: flex; flex-direction: column; gap: 10px; }
+    .rule-row { display: flex; gap: 14px; align-items: flex-start; background: var(--surface-2); border: 1px solid rgba(107,191,138,0.14); border-radius: 10px; padding: 12px 16px; }
+    .rule-id { font-size: 10px; font-weight: 700; color: var(--accent); letter-spacing: 0.1em; flex-shrink: 0; margin-top: 2px; min-width: 30px; }
+    .rule-target { font-size: 0.82rem; color: var(--text); font-weight: 600; margin-bottom: 3px; }
+    .rule-desc { font-size: 0.78rem; color: var(--text-2); line-height: 1.55; }
+
+    .result-box { background: rgba(120,192,104,0.04); border: 1.5px solid var(--wood); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 18px 22px; }
+    .result-lbl { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .result-text { font-size: 0.9rem; color: var(--text); line-height: 1.7; }
+
+    .pills-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { font-size: 11.5px; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(120,192,104,0.28); color: var(--accent); font-weight: 500; background: rgba(120,192,104,0.06); }
+
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border: 1.5px solid var(--wood); border-radius: 10px; color: var(--text-2); font-size: 13px; font-weight: 500; text-decoration: none; background: rgba(12,22,8,0.6); transition: all 0.2s; margin-top: 16px; }
+    .back-btn:hover { border-color: var(--wood-hi); color: var(--text); }
+
+    .rev { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .rev.in { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">Truitt Baker</a>
+    <a href="index.html" class="nav-back">← All Projects</a>
+  </nav>
+
+  <div class="hero">
+    <div class="cat-badge"><div class="cat-dot"></div>Software &amp; STEM</div>
+    <h1 class="hero-title">Chrome Ad Blocker<br>Extension</h1>
+    <p class="hero-sub">A Manifest V3 Chrome extension that blocks ad networks and YouTube ad requests at the network layer — before they even load. Built last summer after my brother couldn't find a free ad blocker that actually worked on YouTube.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-val">7</span><span class="stat-lbl">Block Rules</span></div>
+      <div class="stat"><span class="stat-val">MV3</span><span class="stat-lbl">Manifest</span></div>
+      <div class="stat"><span class="stat-val">0</span><span class="stat-lbl">Page Access</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Why I Built This</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">My brother was having a hard time finding a <strong>free ad blocker that worked consistently on YouTube</strong> — most either cost money, got patched out by Google, or required sketchy permissions.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">I wanted to understand <strong>how ad blockers actually work at the browser level</strong> — not just a filter list, but what API Chrome gives extensions to intercept network requests.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Built last summer using <strong>Chrome's Manifest V3 extension system</strong> — the current standard that replaced Manifest V2 and how uBlock Origin and similar tools now work.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">⚙️</span><span class="card-title">How It Works — declarativeNetRequest</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">Instead of injecting scripts that read and modify page content, this extension uses Chrome's <strong style="color:var(--text)">declarativeNetRequest</strong> API — a declarative rule system where you define URL patterns and Chrome's network stack blocks matching requests automatically, before they ever reach a page.</p>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>No page content access required:</strong> The extension only needs the <code style="font-size:0.8rem;color:var(--accent)">declarativeNetRequest</code> permission — it never reads, scans, or modifies any page's HTML or JavaScript. This makes it both safer and faster than content-script-based blockers.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Host-level blocking:</strong> Rules target specific URL patterns (<code style="font-size:0.8rem;color:var(--accent)">*doubleclick.net*</code>, <code style="font-size:0.8rem;color:var(--accent)">*googlesyndication.com*</code>) and resource types (script, image, XHR, sub_frame). Matching requests return a network error before the browser even resolves DNS.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Background service worker:</strong> The <code style="font-size:0.8rem;color:var(--accent)">background.js</code> service worker is minimal — it just confirms installation. All blocking logic lives in the declarative ruleset, not in runtime code.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🚫</span><span class="card-title">The 7 Blocking Rules</span></div>
+      <div class="card-body">
+        <div class="rule-grid">
+          <div class="rule-row">
+            <div class="rule-id">R1</div>
+            <div>
+              <div class="rule-target">*doubleclick.net*</div>
+              <div class="rule-desc">Blocks Google's DoubleClick ad serving network — the infrastructure behind most display ads on the web. Targets scripts, images, XHR, and sub_frames.</div>
+            </div>
+          </div>
+          <div class="rule-row">
+            <div class="rule-id">R2</div>
+            <div>
+              <div class="rule-target">*googlesyndication.com*</div>
+              <div class="rule-desc">Blocks Google AdSense/Syndication — the ad network that serves ads embedded in third-party websites. Same resource type coverage as R1.</div>
+            </div>
+          </div>
+          <div class="rule-row">
+            <div class="rule-id">R3</div>
+            <div>
+              <div class="rule-target">*youtube.com/get_video_info*</div>
+              <div class="rule-desc">Blocks YouTube's video info endpoint used to fetch ad metadata before video playback begins. Interrupts the ad loading pipeline at the data layer.</div>
+            </div>
+          </div>
+          <div class="rule-row">
+            <div class="rule-id">R4</div>
+            <div>
+              <div class="rule-target">*youtube.com/api/stats/ads*</div>
+              <div class="rule-desc">Blocks YouTube's ad impression tracking endpoint — the XHR that fires when an ad is viewed. Blocking this also interrupts the ad serving flow.</div>
+            </div>
+          </div>
+          <div class="rule-row">
+            <div class="rule-id">R5</div>
+            <div>
+              <div class="rule-target">*youtube.com/ptracking*</div>
+              <div class="rule-desc">Blocks YouTube's ptracking endpoint used for ad engagement measurement. Part of the ad delivery verification chain.</div>
+            </div>
+          </div>
+          <div class="rule-row">
+            <div class="rule-id">R6</div>
+            <div>
+              <div class="rule-target">*youtube.com/generate_204*</div>
+              <div class="rule-desc">Blocks YouTube's connectivity probe endpoint, which is reused by ad systems for ping-based tracking and ad completion signaling.</div>
+            </div>
+          </div>
+          <div class="rule-row">
+            <div class="rule-id">R7</div>
+            <div>
+              <div class="rule-target">*youtube.com/pagead*</div>
+              <div class="rule-desc">Blocks YouTube's pagead endpoint — Google's primary page-level ad delivery route. Catches any remaining display or pre-roll ad load requests.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">📄</span><span class="card-title">Extension Structure</span></div>
+      <div class="card-body">
+        <div class="eq-block">
+          <div class="eq-label">manifest.json (key fields)</div>
+          "manifest_version": 3<br>
+          "permissions": ["declarativeNetRequest"]<br>
+          "host_permissions": ["*://*/*"]<br>
+          "declarative_net_request": { "rule_resources": [{ "id": "ruleset_1", "path": "rules.json" }] }<br>
+          "background": { "service_worker": "background.js" }
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-3);margin-top:10px">Three files total: <code style="color:var(--accent)">manifest.json</code> (extension config), <code style="color:var(--accent)">rules.json</code> (7 block rules), <code style="color:var(--accent)">background.js</code> (service worker — 3 lines). Installed via Chrome's developer mode by loading the unpacked folder.</p>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🔬</span><span class="card-title">What I Learned</span></div>
+      <div class="card-body">
+        <div class="result-box">
+          <div class="result-lbl">Key Takeaway</div>
+          <div class="result-text">The most interesting part was understanding <strong>why Manifest V3 exists</strong> — Google moved from MV2 (which allowed extensions to intercept all network requests with code) to MV3 (which only allows declarative, pre-auditable rules). This actually makes ad blockers more reliable in some ways but limits dynamic rule generation. The extension works — YouTube ads are blocked — but YouTube's anti-adblocker detection is a separate layer that targets page-level DOM changes, which this extension doesn't address.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-body">
+        <div class="pills-row">
+          <span class="pill">JavaScript</span>
+          <span class="pill">Chrome Extension API</span>
+          <span class="pill">Manifest V3</span>
+          <span class="pill">declarativeNetRequest</span>
+          <span class="pill">JSON Rule Engine</span>
+          <span class="pill">Service Worker</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-btn rev">← Back to All Projects</a>
+
+  </div>
+
+  <script>
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rev').forEach(el => ro.observe(el));
+  </script>
+</body>
+</html>

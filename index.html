@@ -399,6 +399,7 @@
       transform: translateY(-3px);
       box-shadow: 0 14px 38px rgba(0,0,0,0.55), 0 0 22px rgba(127,163,107,0.06);
     }
+
     .proj-header {
       display: flex;
       align-items: flex-start;
@@ -452,7 +453,7 @@
     }
     .proj-arrow {
       position: absolute;
-      bottom: 22px; right: 24px;
+      bottom: 20px; right: 22px;
       font-size: 15px;
       color: var(--text-3);
       transition: color 0.2s, transform 0.2s;
@@ -567,31 +568,18 @@
     <div class="hero-overlay"></div>
 
     <div class="hero-content">
-      <div class="hero-eyebrow">PostAP Computer Science · 2024–2025</div>
+      <div class="hero-eyebrow">PostAP Computer Science · 2023–2026</div>
       <h1 class="hero-title">Leave a<br>Legacy.</h1>
       <div class="hero-stats">
         <div class="h-stat">
-          <span class="h-stat-val">12</span>
-          <div class="h-stat-lbl">Projects Built</div>
-        </div>
-        <div class="h-stat">
-          <span class="h-stat-val">238</span>
+          <span class="h-stat-val">300+</span>
           <div class="h-stat-lbl">Hours Invested</div>
-        </div>
-        <div class="h-stat">
-          <span class="h-stat-val">3</span>
-          <div class="h-stat-lbl">Domains</div>
         </div>
         <div class="h-stat">
           <span class="h-stat-val">∞</span>
           <div class="h-stat-lbl">Still Going</div>
         </div>
       </div>
-    </div>
-
-    <div class="hero-corner">
-      <div class="hero-corner-big">12<span class="hero-corner-slash"> /12</span></div>
-      <div class="hero-corner-lbl">Projects Complete</div>
     </div>
 
     <div class="scroll-hint">Scroll</div>
@@ -643,11 +631,11 @@
   <section id="tips">
     <div class="section-wrap">
       <div class="section-header">
-        <div class="section-eyebrow rev">Advice</div>
-        <h2 class="section-title rev">What I Wish I'd Known</h2>
+    <div class="section-eyebrow rev">Advice</div>
+    <h2 class="section-title rev">What I Wish I'd Known</h2>
         <p class="section-sub rev">Honest survival tips for the next group of PostAP students — the things nobody tells you before you sign up.</p>
       </div>
-      <div class="tips-grid" id="tips-g"></div>
+    <div class="tips-grid" id="tips-g"></div>
     </div>
   </section>
 
@@ -661,21 +649,18 @@
         <h2 class="section-title rev">A Note From Me</h2>
       </div>
       <div class="letter-body">
-        <p class="rev">PostAP is unlike any class you've taken. There are no rubrics, no tests, no safety net — just you, a problem, and whatever drive you can muster to figure it out. That's terrifying and incredible at the same time.</p>
-        <p class="rev">The best thing I did was pick projects that genuinely interested me. When I hit walls — and I hit a lot of them, like teaching myself derivatives while still in Pre-Calc — curiosity kept me going far more effectively than any grade ever could have.</p>
-        <p class="rev">Skills compound here in a way they don't in normal classes. My trading bot got sharper because I understood numerical methods from the pendulum project. My black hole simulation became possible because I'd already built the 2D lensing version first. Every project you finish makes the next one more possible.</p>
-        <p class="rev">One more thing: let the physics pull you somewhere unexpected. I started with a simple pendulum and ended up GPU-rendering relativistic black holes on the school network. Curiosity compounds just like skills do. You probably won't get that far your first semester — but you might surprise yourself.</p>
-        <div class="callout rev">
-          <div class="callout-lbl">The honest summary</div>
-          <p>You won't feel qualified. Build anyway. Ship it broken, then fix it. That cycle — repeated across twelve projects and 238 hours — is what PostAP actually taught me.</p>
-        </div>
-        <p class="sig rev">— Truitt Baker, PostAP CS 2024–2025</p>
+        <p class="rev">PostAP is unlike any class you have taken. There are no rubrics, no tests — it is just you, a problem, and whatever drive you can pull together to figure it out. That is the terrifying and incredible part of this class. This class will take you as far as your imagination will permit.</p>
+        <p class="rev">The best thing I did was pick projects that genuinely interested me. When I hit walls, and I hit a lot of them, like teaching myself derivatives while still in Pre-Calc and post-graduate math to simulate black holes, curiosity kept me going way more effectively than any grade ever could have.</p>
+        <p class="rev">Skills compound here in a way they do not in normal classes. My trading bot got sharper because I understood numerical methods from the pendulum project. My black hole simulation became possible because I had already built the 2D lensing version first. Every project you finish makes the next one more possible. That is not a coincidence, that is the whole point of this class. And it all compounds because of genuine curiosity, not obligation.</p>
+        <p class="rev">This class also opens real doors. My trading bot is actually profitable and something I plan to continue running and building into the future. I was offered an internship at a 300 million dollar hedge fund through work I did in this class. Investors have taken genuine interest in projects built in this room. These are not hypotheticals, they are things that happened because this class gives you the ability to explore. I did not realize how important this class was to me until I finally started seeing it slip away. I wish I had more time, because the greatest classes are the ones that keep you up until 4am, not for a grade, but because you are too engulfed in it to quit.</p>
+        <p class="rev">If I could talk to myself when I was first entering this class, I would tell him: let curiosity pull you in any direction you want to go. Do not build something you do not care about, because you will not grow that way. Have fun. This class is meant to be a unique experience that you walk away from as a better and more capable person.</p>
+        <p class="sig rev">— Truitt Baker, PostAP CS 2023–2026</p>
       </div>
     </div>
   </section>
 
   <footer>
-    <p>Truitt Baker &nbsp;·&nbsp; PostAP Computer Science &nbsp;·&nbsp; 2024–2025</p>
+    <p>Truitt Baker &nbsp;·&nbsp; PostAP Computer Science &nbsp;·&nbsp; 2023–2026</p>
   </footer>
 
   <script>
@@ -771,8 +756,8 @@
     {
       id: 'blackscholes', cat: 'finance', num: '08',
       title: 'Black-Scholes Option Pricing',
-      desc: 'Implemented the Black-Scholes formula to price European options and compute the Greeks (delta, gamma, theta, vega). Includes a Newton-Raphson implied-volatility solver.',
-      tags: ['Python', 'Financial Math', 'Greeks', 'Implied Volatility'],
+      desc: 'Implemented Black-Scholes in pure Python — pricing both calls and puts using only math.erf (no NumPy, no SciPy). Part of a broader trading toolkit including an RSI + Fair Value Gap bot and a CV chart digitizer.',
+      tags: ['Python', 'Financial Math', 'Options Pricing', 'math.erf'],
       url: 'project-blackscholes.html',
     },
     {
@@ -792,15 +777,29 @@
     {
       id: 'hangman', cat: 'software', num: '11',
       title: 'Hangman Game & Solver GUI',
-      desc: 'A GUI-based hangman game paired with an algorithmic solver that uses letter-frequency analysis and word-list elimination to optimally guess any word in the English dictionary.',
-      tags: ['Python', 'Tkinter', 'Algorithm Design', 'GUI'],
+      desc: 'A full Pygame Hangman game with a 2,986-word CSV word bank, custom word input, and a built-in solver that auto-plays using letter frequency — started in Java, rebuilt in Python with a drawn GUI.',
+      tags: ['Python', 'Pygame', 'Java', 'Algorithm Design', 'CSV'],
       url: 'project-hangman.html',
     },
     {
-      id: 'pokerbot', cat: 'software', num: '12',
+      id: 'addblocker', cat: 'software', num: '12',
+      title: 'Chrome Ad Blocker Extension',
+      desc: 'A Manifest V3 Chrome extension using the declarativeNetRequest API to block Google ad networks and YouTube ad endpoints at the network level — no page content access needed. Built last summer after my brother couldn\'t find a free YouTube ad blocker that actually worked.',
+      tags: ['JavaScript', 'Chrome Extension', 'Manifest V3', 'declarativeNetRequest'],
+      url: 'project-addblocker.html',
+    },
+    {
+      id: 'emo', cat: 'software', num: '13',
+      title: 'EMO Music Classifier',
+      desc: 'A rule-based emo song detector — no training data required. Analyzes audio files with librosa (spectral centroid, ZCR, tempo, chroma, onset strength) and optionally scans lyrics for first-person pronoun density, emo keyword frequency, and intensity markers. Outputs an emo_percent score, confidence, and a boolean decision.',
+      tags: ['Python', 'Librosa', 'Audio Analysis', 'Signal Processing', 'NLP'],
+      url: 'project-emo.html',
+    },
+    {
+      id: 'pokerbot', cat: 'software', num: '14',
       title: 'Poker Bot',
-      desc: 'A poker decision engine built on probability calculations and expected-value maximization. Computes pot odds, hand equity, and recommends optimal actions in real time.',
-      tags: ['Python', 'Game Theory', 'Probability', 'EV Math'],
+      desc: 'A three-layer exploit bot playing live Texas Hold\'em on a real server — tracking opponent tendencies, weaponizing their leaks, and randomizing its own patterns to stay impossible to counter.',
+      tags: ['Python', 'Exploit Strategy', 'Stat Tracking', 'HTTP API', 'Hand Evaluator', 'PRNG'],
       url: 'project-pokerbot.html',
     },
   ];
@@ -925,12 +924,12 @@
 
   // ── Tips data ─────────────────────────────────────────────────────
   const TIPS = [
-    { h: 'Start before you feel ready', p: "You won't understand everything before you begin. Start the project, hit a wall, then figure it out. That loop is the whole point." },
-    { h: 'Teach yourself relentlessly', p: "I learned derivatives while still in Pre-Calc because my project demanded it. Don't wait for school to catch up to your curiosity." },
-    { h: 'Connect your passions', p: "Trading interested me so I built tools for it. Physics fascinated me so I simulated it. The best projects come from genuine interest, not obligation." },
-    { h: 'Small wins compound', p: "The 2D lensing model was a stepping stone to GPU-accelerated black holes. Every project you finish powers the next one." },
-    { h: 'Document everything', p: "Analyzing 122,000 lines of backtesting data taught me: recording your process is half the work. Future-you will thank present-you." },
-    { h: 'Let curiosity lead', p: "One pendulum question led to three numerical methods, a chaos paper, and eventually relativistic physics. Follow the thread wherever it goes." },
+    { h: 'Start before you feel ready', p: "You won't understand everything before you begin. Start the project, hit a wall, then figure it out. That loop is the whole point. It's the driving force for curiosity, and it is the only real cure for Einstein's definition of insanity: doing the same thing over and over again and expecting different results." },
+    { h: 'Teach yourself relentlessly', p: "I learned derivatives while still in Pre-Calc and post-graduate mathematics to simulate black holes because my projects demanded it. Don't wait for school to catch up to your curiosity. It never will if you're doing it right." },
+    { h: 'Connect your passions', p: "Trading interested me so I built tools for it. Physics fascinated me so I simulated it. The best projects come from genuine interest, not obligation. When you chase what already gives you curiosity, you're far more likely to stick with it — and push further than you ever thought was possible." },
+    { h: 'Small wins compound', p: "The 2D lensing model was a stepping stone to GPU-accelerated black holes. Every project, small or large, you finish powers the next one. Every good project works this way. Each one teaches you something that unlocks the next level, and more importantly, keeps you going." },
+    { h: 'Document everything', p: "Record your process, your failures, and your reasoning as you go. You will make mistakes, everyone does. But if you document them, you won't repeat them. Future-you will thank present-you. So will Dr. Lena because your presentations will be better." },
+    { h: 'Let curiosity lead', p: "One pendulum question led to three numerical methods, a chaos paper, and eventually relativistic physics. Follow the thread wherever it goes because that thread is the driving force behind every project here. None of this was planned. It all stemmed from one project onto another." },
   ];
   const tipsG = document.getElementById('tips-g');
   TIPS.forEach((t, i) => {

@@ -107,7 +107,6 @@
     <h1 class="hero-title">Double Pendulum<br>Simulations</h1>
     <p class="hero-sub">Comparing three numerical integration methods on a chaotic physical system — Euler, RK4, and Runge-Kutta-Nyström.</p>
     <div class="stats-row">
-      <div class="stat"><span class="stat-val">40</span><span class="stat-lbl">Hours</span></div>
       <div class="stat"><span class="stat-val">3</span><span class="stat-lbl">Simulations</span></div>
       <div class="stat"><span class="stat-val">18k</span><span class="stat-lbl">Data Points</span></div>
     </div>
@@ -143,12 +142,17 @@
     <div class="card rev">
       <div class="card-head"><span class="card-icon">🔋</span><span class="card-title">Energy Conservation</span></div>
       <div class="card-body">
-        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">One key way to validate any numerical simulation of a physical system is energy conservation. In a frictionless double pendulum, the total mechanical energy (kinetic + potential) should remain constant over time.</p>
-        <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Kinetic Energy (T):</strong> sum of rotational kinetic energy of both arms, dependent on masses, lengths, and angular velocities.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Potential Energy (V):</strong> gravitational PE relative to the pivot, dependent on angles and heights of each bob.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Total Energy E = T + V</strong> should be conserved. Drift in this quantity indicates numerical error — a clear metric for comparing methods.</span></div>
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">One key way to validate a numerical simulation is energy conservation. In a frictionless double pendulum, the total mechanical energy (KE + PE) must stay constant. Drift means numerical error — a direct comparison metric between methods.</p>
+        <div class="eq-block">
+          <div class="eq-label">Kinetic Energy (from CalcEnergy.py)</div>
+          KE = ½m₁(L₁ω₁)² + ½m₂[L₁²ω₁² + L₂²ω₂² + 2L₁L₂ω₁ω₂cos(θ₁−θ₂)]
         </div>
+        <div class="eq-block" style="margin-top:10px">
+          <div class="eq-label">Potential Energy</div>
+          y₁ = −L₁cos(θ₁)  &nbsp;&nbsp;  y₂ = y₁ − L₂cos(θ₂)<br>
+          PE = m₁gy₁ + m₂gy₂
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-3);margin-top:10px">Initial conditions for all three simulations: θ₁ = θ₂ = 45°, ω₁ = ω₂ = 0 (starting from rest). m₁ = m₂ = 1 kg, g = 9.8 m/s².</p>
       </div>
     </div>
 
@@ -183,6 +187,26 @@
     </div>
 
     <div class="card rev">
+      <div class="card-head"><span class="card-icon">📁</span><span class="card-title">Data Pipeline — Logging &amp; Plotting</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">Each simulation writes its full state to a CSV file every frame via <code style="color:var(--accent);font-size:0.8rem">EnergyLogger</code>, then <code style="color:var(--accent);font-size:0.8rem">plot_Energy.py</code> generates five diagnostic plots per method — 15 plots total across all three simulations.</p>
+        <div class="eq-block">
+          <div class="eq-label">CSV columns logged every frame</div>
+          Time (s) · Kinetic Energy · Potential Energy · Total Energy<br>
+          Change in Energy · Theta1 (deg) · Theta2 (deg) · Omega1 (rad/s) · Omega2 (rad/s)
+        </div>
+        <div class="hi-list" style="margin-top:14px">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Plot 1 — Energy Error vs Time:</strong> absolute |E − E₀| over the full run. This is the primary accuracy metric — flat = good, drift = bad.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Plot 2 — Total Energy vs Time:</strong> shows whether the integrator adds or removes energy from the system.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Plot 3 — Angles vs Time:</strong> θ₁ and θ₂ trajectories — visual chaos signature. Even small divergence between methods is dramatic here.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Plot 4 — KE &amp; PE vs Time:</strong> energy exchange between kinetic and potential, showing the oscillation rhythm of each arm.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Plot 5 — Angular Velocities vs Time:</strong> ω₁ and ω₂ — directly shows the moment the system goes chaotic as velocities diverge.</span></div>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-3);margin-top:12px">Timesteps: Euler — 1/60 s (frame-locked), RK4 — 0.01 s, RKN — 0.001 s (smallest step, highest accuracy).</p>
+      </div>
+    </div>
+
+    <div class="card rev">
       <div class="card-head"><span class="card-icon">📊</span><span class="card-title">Results &amp; Analysis</span></div>
       <div class="card-body">
         <div class="result-box" style="margin-bottom:18px">
@@ -202,13 +226,23 @@
       <div class="card-body">
         <div class="pills-row">
           <span class="pill">Python</span>
-          <span class="pill">GUI (Tkinter)</span>
+          <span class="pill">Pygame</span>
           <span class="pill">Euler Method</span>
           <span class="pill">RK4</span>
           <span class="pill">RKN</span>
-          <span class="pill">Data Analysis</span>
+          <span class="pill">EnergyLogger (CSV)</span>
           <span class="pill">Matplotlib</span>
           <span class="pill">NumPy</span>
+          <span class="pill">Pandas</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🎬</span><span class="card-title">Learn More</span></div>
+      <div class="card-body">
+        <div style="position:relative;padding-bottom:56.25%;height:0;border-radius:10px;overflow:hidden;border:1px solid var(--border-hi);">
+          <iframe src="https://www.youtube.com/embed/H3Pgv49U1ts" title="Double Pendulum Simulation Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>
         </div>
       </div>
     </div>

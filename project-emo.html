@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EMO Music Classifier — Truitt Baker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:           #07130B;
+      --surface:      #0D1E14;
+      --surface-2:    #163322;
+      --surface-card: rgba(22,51,34,0.75);
+      --border:       rgba(127,163,107,0.15);
+      --border-hi:    rgba(107,191,138,0.32);
+      --text:         #D7E2D3;
+      --text-2:       #8B9B8F;
+      --text-3:       #4A6B55;
+      --accent:       #6BBF8A;
+      --wood:         #1E3A28;
+      --wood-hi:      #3D6B4E;
+      --aud:          #7EB8E0;
+      --lyr:          #D4A843;
+      --str:          #A87EE0;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 998; pointer-events: none; opacity: 0.038; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; }
+
+    .blob { position: fixed; border-radius: 50%; filter: blur(160px); pointer-events: none; z-index: 0; }
+    .blob-1 { width: 650px; height: 650px; background: rgba(107,191,138,0.07); top: -240px; right: -220px; }
+    .blob-2 { width: 450px; height: 450px; background: rgba(45,90,61,0.05); bottom: 12%; left: -180px; }
+
+    .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 14px 40px; background: rgba(7,19,11,0.84); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+    .nav-brand { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; color: var(--text); text-decoration: none; letter-spacing: 0.08em; }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; padding: 7px 14px; border: 1px solid var(--border-hi); border-radius: 8px; background: rgba(107,191,138,0.06); transition: all 0.2s; }
+    .nav-back:hover { color: var(--text); border-color: var(--accent); background: rgba(107,191,138,0.12); }
+
+    .hero { position: relative; z-index: 1; padding: 130px 24px 60px; text-align: center; max-width: 800px; margin: 0 auto; }
+    .cat-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 20px; padding: 5px 14px; border: 1px solid rgba(120,192,104,0.3); border-radius: 100px; background: rgba(120,192,104,0.07); }
+    .cat-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+    .hero-title { font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 5.5vw, 3.4rem); font-weight: 700; letter-spacing: 0.02em; line-height: 1.15; margin-bottom: 16px; color: var(--text); }
+    .hero-sub { color: var(--text-2); font-size: 1.05rem; max-width: 530px; margin: 0 auto 36px; line-height: 1.7; }
+    .stats-row { display: flex; gap: 0; justify-content: center; border: 1px solid var(--border-hi); border-radius: 12px; background: var(--surface-card); backdrop-filter: blur(12px); overflow: hidden; max-width: 480px; margin: 0 auto; box-shadow: inset 0 1px 0 rgba(107,191,138,0.08), 0 6px 28px rgba(0,0,0,0.45); }
+    .stat { padding: 16px 28px; text-align: center; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-val { display: block; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .stat-lbl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+
+    .content { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 60px 24px 100px; display: flex; flex-direction: column; gap: 24px; }
+
+    .card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 8px 30px rgba(0,0,0,0.45); position: relative; }
+    .card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(127,163,107,0.04); border-radius: 11px; pointer-events: none; z-index: 0; }
+    .card-head { display: flex; align-items: center; gap: 14px; padding: 20px 24px; border-bottom: 1px solid var(--border); position: relative; z-index: 1; }
+    .card-icon { font-size: 20px; }
+    .card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .card-body { padding: 22px 24px; position: relative; z-index: 1; }
+
+    .hi-list { display: flex; flex-direction: column; gap: 12px; }
+    .hi { display: flex; gap: 12px; align-items: flex-start; }
+    .hi-arrow { color: var(--accent); font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+    .hi-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.65; }
+    .hi-text strong { color: var(--text); font-weight: 600; }
+
+    .eq-block { background: var(--surface-2); border: 1px solid var(--border-hi); border-radius: 10px; padding: 16px 20px; font-family: 'Courier New', monospace; font-size: 12.5px; color: var(--text); line-height: 1.85; }
+    .eq-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+
+    .feat-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+    .feat-card { background: var(--surface-2); border-radius: 10px; padding: 14px 16px; }
+    .feat-card.aud { border: 1px solid rgba(126,184,224,0.3); }
+    .feat-card.lyr { border: 1px solid rgba(212,168,67,0.3); }
+    .feat-card.str { border: 1px solid rgba(168,126,224,0.3); }
+    .feat-name { font-size: 0.78rem; font-weight: 700; margin-bottom: 5px; }
+    .feat-name.aud { color: var(--aud); }
+    .feat-name.lyr { color: var(--lyr); }
+    .feat-name.str { color: var(--str); }
+    .feat-desc { font-size: 0.75rem; color: var(--text-2); line-height: 1.55; }
+
+    .profile-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+    .profile-card { background: var(--surface-2); border: 1px solid rgba(107,191,138,0.16); border-radius: 10px; padding: 14px 16px; text-align: center; }
+    .profile-name { font-size: 0.82rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+    .profile-thresh { font-size: 1.4rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .profile-desc { font-size: 0.72rem; color: var(--text-2); line-height: 1.5; }
+
+    .result-box { background: rgba(120,192,104,0.04); border: 1.5px solid var(--wood); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 18px 22px; }
+    .result-lbl { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .result-text { font-size: 0.9rem; color: var(--text); line-height: 1.7; }
+
+    .pills-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { font-size: 11.5px; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(120,192,104,0.28); color: var(--accent); font-weight: 500; background: rgba(120,192,104,0.06); }
+
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border: 1.5px solid var(--wood); border-radius: 10px; color: var(--text-2); font-size: 13px; font-weight: 500; text-decoration: none; background: rgba(12,22,8,0.6); transition: all 0.2s; margin-top: 16px; }
+    .back-btn:hover { border-color: var(--wood-hi); color: var(--text); }
+
+    .rev { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .rev.in { opacity: 1; transform: none; }
+
+    @media (max-width: 540px) { .profile-row { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">Truitt Baker</a>
+    <a href="index.html" class="nav-back">← All Projects</a>
+  </nav>
+
+  <div class="hero">
+    <div class="cat-badge"><div class="cat-dot"></div>Software &amp; STEM</div>
+    <h1 class="hero-title">EMO Music<br>Classifier</h1>
+    <p class="hero-sub">A rule-based classifier that analyzes audio files and optional lyrics to determine if a song is emo — no training data required. Uses signal processing and NLP to compute an emo_percent score and boolean decision.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-val">0</span><span class="stat-lbl">Training Data</span></div>
+      <div class="stat"><span class="stat-val">3</span><span class="stat-lbl">Profiles</span></div>
+      <div class="stat"><span class="stat-val">Audio+Lyrics</span><span class="stat-lbl">Inputs</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Given any audio file (.mp3/.wav), the classifier outputs an <strong>emo_percent score (0–100)</strong>, a confidence percentage, and a boolean <code style="font-size:0.8rem;color:var(--accent)">is_emo</code> decision — without ever being trained on labeled song data.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Works by extracting <strong>audio features with librosa</strong> — the same library used in music information retrieval research — and combining them with hand-crafted rules based on what makes a song sound "emo" (distorted guitars, minor keys, dynamic swings, fast drums).</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Optionally accepts a <strong>lyrics text file</strong> for a second scoring pass — analyzing first-person pronoun density, emo keyword frequency, and textual intensity markers (exclamation marks, ALL CAPS, repeated phrases).</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Optional <strong>baseline comparison</strong>: feed it a known emo song and a known non-emo song — the classifier boosts the score for songs that sound similar to the emo baseline and penalizes those resembling the non-emo baseline, using cosine similarity on combined feature vectors.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🎵</span><span class="card-title">Audio Feature Extraction</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:16px;line-height:1.7">Every song is loaded at 22,050 Hz mono and analyzed across these signal-processing features, which are then combined into four composite scores:</p>
+        <div class="feat-grid">
+          <div class="feat-card aud">
+            <div class="feat-name aud">Distortion Proxy</div>
+            <div class="feat-desc">High spectral centroid + high rolloff + high ZCR + flat spectrum → guitar distortion. Weighted 45% in the audio score.</div>
+          </div>
+          <div class="feat-card aud">
+            <div class="feat-name aud">Drum Drive</div>
+            <div class="feat-desc">Onset strength (attack density) + tempo centered at 155 BPM. Emo drums are fast and punchy. Weighted 25%.</div>
+          </div>
+          <div class="feat-card aud">
+            <div class="feat-name aud">Vocal Intensity Variance</div>
+            <div class="feat-desc">Standard deviation of RMS and spectral centroid over time. High variance = dramatic vocal dynamics typical of emo. Weighted 30%.</div>
+          </div>
+          <div class="feat-card str">
+            <div class="feat-name str">Delta Energy</div>
+            <div class="feat-desc">90th percentile RMS minus 10th percentile RMS — measures how much the song's energy swings between quiet and loud. Core emo structural marker. Weighted 70% of structure score.</div>
+          </div>
+          <div class="feat-card str">
+            <div class="feat-name str">Minor Key Score</div>
+            <div class="feat-desc">Chroma analysis detects minor key strength (A minor + B minor chroma energy). Emo music overwhelmingly favors minor keys.</div>
+          </div>
+          <div class="feat-card str">
+            <div class="feat-name str">Chorus Repetition</div>
+            <div class="feat-desc">Recurrence matrix on chroma vectors measures structural repetition — choruses create high off-diagonal recurrence. 30% of structure score.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">📝</span><span class="card-title">Lyric Analysis</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">When a lyrics file is provided, five text features are extracted and combined into a <code style="font-size:0.8rem;color:var(--accent)">lyric_score</code> (0–1). This score then gets 50% weight in the final emo_percent calculation.</p>
+        <div class="feat-grid">
+          <div class="feat-card lyr">
+            <div class="feat-name lyr">First-Person Density (30%)</div>
+            <div class="feat-desc">Frequency of "I", "me", "my", "myself", "I'm". Emo songs are deeply personal and self-referential.</div>
+          </div>
+          <div class="feat-card lyr">
+            <div class="feat-name lyr">Emo Keyword Density (30%)</div>
+            <div class="feat-desc">19 keywords: "miss", "broken", "alone", "numb", "worthless", "hurt", "death", "empty", "regret", and others normalized by word count.</div>
+          </div>
+          <div class="feat-card lyr">
+            <div class="feat-name lyr">Relational Words (20%)</div>
+            <div class="feat-desc">"you/your/we/us" + romance words ("love", "heart", "apart", "forever"). Emo is defined by relationship-driven narratives.</div>
+          </div>
+          <div class="feat-card lyr">
+            <div class="feat-name lyr">Intensity Markers (10%)</div>
+            <div class="feat-desc">Exclamation marks per line, ALL CAPS word count, and repeated bigrams — markers of emotional intensity in the text.</div>
+          </div>
+          <div class="feat-card lyr">
+            <div class="feat-name lyr">Negative Density (10%)</div>
+            <div class="feat-desc">Subset of hardest keywords: "alone", "broken", "lost", "numb", "hurt", "cry", "worthless" — the darkest word cluster.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">📊</span><span class="card-title">Scoring Pipeline</span></div>
+      <div class="card-body">
+        <div class="eq-block">
+          <div class="eq-label">Final emo_percent calculation</div>
+          <span style="color:var(--lyr)">With lyrics:</span><br>
+          &nbsp;&nbsp;emo_percent = 100 × (0.50 × lyric_score + 0.25 × structure_score + 0.25 × audio_score)<br><br>
+          <span style="color:var(--aud)">Audio only:</span><br>
+          &nbsp;&nbsp;emo_percent = 100 × (0.55 × structure_score + 0.45 × audio_score)<br><br>
+          <span style="color:var(--str)">Consistency penalty:</span><br>
+          &nbsp;&nbsp;penalty = 1 − 0.4 × |structure_score − audio_score|<br>
+          &nbsp;&nbsp;emo_percent × penalty  ← penalizes conflicting signals<br><br>
+          <span style="color:var(--accent)">Sigmoid calibration → confidence → final decision:</span><br>
+          &nbsp;&nbsp;emo_percent = sigmoid(emo_percent, midpoint=threshold, sharpness=0.15)<br>
+          &nbsp;&nbsp;confidence = |emo_percent − threshold| / 50<br>
+          &nbsp;&nbsp;decision_percent = (emo_percent + confidence) / 2<br>
+          &nbsp;&nbsp;is_emo = decision_percent > 50
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">⚙️</span><span class="card-title">Three Decision Profiles</span></div>
+      <div class="card-body">
+        <div class="profile-row">
+          <div class="profile-card">
+            <div class="profile-name">Strict</div>
+            <div class="profile-thresh">63%</div>
+            <div class="profile-desc">High threshold. Only songs with very strong emo signals across all features get flagged. Minimizes false positives.</div>
+          </div>
+          <div class="profile-card">
+            <div class="profile-name">Balanced</div>
+            <div class="profile-thresh">55%</div>
+            <div class="profile-desc">Default profile. Moderate threshold with equal sensitivity to audio and structure. Best general use.</div>
+          </div>
+          <div class="profile-card">
+            <div class="profile-name">Lenient</div>
+            <div class="profile-thresh">48%</div>
+            <div class="profile-desc">Lower threshold. Catches borderline emo/post-punk/screamo adjacent songs. Higher false positive rate.</div>
+          </div>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-3);margin-top:12px">Profile also adjusts audio_weights (distortion/vocal/drum ratios) and structure_weights (delta_energy/chorus ratios). All three are selectable via CLI flag: <code style="color:var(--accent)">--profile strict</code></p>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🔬</span><span class="card-title">Baseline Comparison Mode</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Optionally feed a <strong>known emo song</strong> (<code style="font-size:0.8rem;color:var(--accent)">--baseline-audio EMOSong.mp3</code>) and a <strong>known non-emo song</strong> (<code style="font-size:0.8rem;color:var(--accent)">--anti-baseline-audio REALLYNONEMO.mp3</code>).</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Both songs are converted to a <strong>combined feature vector</strong>: MFCC (20 coefficients) + chroma + spectral contrast + RMS + onset strength + tempo. Then cosine similarity is computed between the target song and each baseline.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Contrast score</strong> = 0.5 + 0.5 × (emo_similarity − non_emo_similarity). Songs that sound more like the emo baseline than the non-emo baseline get boosted. The blend weight is adjustable (<code style="font-size:0.8rem;color:var(--accent)">--baseline-weight 0.35</code>).</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-body">
+        <div class="pills-row">
+          <span class="pill">Python</span>
+          <span class="pill">Librosa</span>
+          <span class="pill">NumPy</span>
+          <span class="pill">Audio Signal Processing</span>
+          <span class="pill">MFCC</span>
+          <span class="pill">Chroma Features</span>
+          <span class="pill">Cosine Similarity</span>
+          <span class="pill">Regex NLP</span>
+          <span class="pill">Sigmoid Calibration</span>
+          <span class="pill">CLI (argparse)</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="index.html" class="back-btn rev">← Back to All Projects</a>
+
+  </div>
+
+  <script>
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rev').forEach(el => ro.observe(el));
+  </script>
+</body>
+</html>

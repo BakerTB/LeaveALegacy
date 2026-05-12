@@ -99,11 +99,11 @@
   <div class="hero">
     <div class="cat-badge"><div class="cat-dot"></div>Finance</div>
     <h1 class="hero-title">Black-Scholes<br>Option Pricing Model</h1>
-    <p class="hero-sub">Implementing the Nobel Prize-winning formula in Python to visualize and understand how options are theoretically priced — and where reality diverges from theory.</p>
+    <p class="hero-sub">Implementing the Nobel Prize-winning formula in pure Python — pricing both calls and puts using only the built-in <code style="font-size:0.9rem;color:var(--accent)">math</code> module, no external libraries. Part of a broader stock trading toolkit.</p>
     <div class="stats-row">
-      <div class="stat"><span class="stat-val">1 hr</span><span class="stat-lbl">Per Week</span></div>
-      <div class="stat"><span class="stat-val">1 wk</span><span class="stat-lbl">Built</span></div>
-      <div class="stat"><span class="stat-val">Python</span><span class="stat-lbl">Language</span></div>
+      <div class="stat"><span class="stat-val">33</span><span class="stat-lbl">Lines of Code</span></div>
+      <div class="stat"><span class="stat-val">0</span><span class="stat-lbl">Dependencies</span></div>
+      <div class="stat"><span class="stat-val">Call + Put</span><span class="stat-lbl">Both Priced</span></div>
     </div>
   </div>
 
@@ -113,24 +113,60 @@
       <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
       <div class="card-body">
         <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Implemented the <strong>Black-Scholes option pricing formula</strong> in Python to understand the mathematical foundation behind how options get their prices.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Built visualizations that show how the theoretical option price changes as each input variable shifts — helping build real intuition for options pricing dynamics.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Part of the broader study that led to building the <strong>Options Trading Bot</strong> — understanding the theory helped identify where the model breaks down in practice.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Spring 2025 — built in one week as a focused deep-dive.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Implemented the <strong>Black-Scholes option pricing formula</strong> in pure Python — pricing both European calls and puts with zero external dependencies. The only import is <code style="font-size:0.8rem;color:var(--accent)">math</code>.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">The standard normal CDF <code style="font-size:0.8rem;color:var(--accent)">N(x)</code> is implemented from scratch using <code style="font-size:0.8rem;color:var(--accent)">math.erf</code> — the error function built into Python — rather than pulling in SciPy or NumPy just for one function.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Part of a <strong>broader stock trading toolkit</strong> in the same folder — alongside an RSI + Fair Value Gap trading bot (Moomoo API) and a CV-based screenshot digitizer that extracts chart data from images.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Understanding this formula directly shaped the <strong>Options Trading Bot</strong> — knowing how implied volatility feeds into the price made IV-based trade filters much more precise.</span></div>
         </div>
       </div>
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">📐</span><span class="card-title">The Formula</span></div>
+      <div class="card-head"><span class="card-icon">📐</span><span class="card-title">The Formula — Calls & Puts</span></div>
       <div class="card-body">
         <div class="eq-block">
-          <div class="eq-label">Black-Scholes Pricing Formula — European Call Option</div>
-          C = S·N(d₁) − K·e^(−rT)·N(d₂)<br><br>
+          <div class="eq-label">European Call</div>
+          C = S · N(d₁) − K · e^(−rT) · N(d₂)<br><br>
+          <div class="eq-label" style="margin-top:8px">European Put</div>
+          P = K · e^(−rT) · N(−d₂) − S · N(−d₁)<br><br>
+          <div class="eq-label" style="margin-top:8px">Shared intermediates</div>
           d₁ = [ln(S/K) + (r + σ²/2)·T] / (σ·√T)<br>
           d₂ = d₁ − σ·√T
         </div>
-        <p style="font-size:0.8rem;color:var(--text-3);margin-top:10px">N(·) = cumulative standard normal distribution. The formula assumes log-normal price distribution, constant volatility, no dividends, and frictionless markets.</p>
+        <p style="font-size:0.8rem;color:var(--text-3);margin-top:10px">N(·) = cumulative standard normal CDF, implemented as <code style="color:var(--accent)">0.5 × (1 + erf(x / √2))</code>. Assumes log-normal price distribution, constant volatility, no dividends, frictionless markets.</p>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">💻</span><span class="card-title">The Implementation</span></div>
+      <div class="card-body">
+        <div class="eq-block">
+          <div class="eq-label">Black–Scholes.py (key logic)</div>
+          <span style="color:var(--text-3)">import</span> math<br><br>
+          <span style="color:var(--text-3)">def</span> <span style="color:var(--accent)">N</span>(x):<br>
+          &nbsp;&nbsp;<span style="color:var(--text-3)">return</span> 0.5 * (1 + math.erf(x / math.sqrt(2)))<br><br>
+          <span style="color:var(--text-3)">def</span> <span style="color:var(--accent)">black_scholes</span>(S, K, T, r, sigma, option=<span style="color:var(--accent)">"call"</span>):<br>
+          &nbsp;&nbsp;d1 = (math.log(S/K) + (r + 0.5*sigma**2)*T) / (sigma*math.sqrt(T))<br>
+          &nbsp;&nbsp;d2 = d1 - sigma * math.sqrt(T)<br>
+          &nbsp;&nbsp;<span style="color:var(--text-3)">if</span> option == <span style="color:var(--accent)">"call"</span>:<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--text-3)">return</span> S*N(d1) - K*math.exp(-r*T)*N(d2)<br>
+          &nbsp;&nbsp;<span style="color:var(--text-3)">elif</span> option == <span style="color:var(--accent)">"put"</span>:<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:var(--text-3)">return</span> K*math.exp(-r*T)*N(-d2) - S*N(-d1)<br><br>
+          <span style="color:var(--text-3)"># Example — ATM, 1yr, 5% rate, 20% IV:</span><br>
+          black_scholes(100, 100, 1, 0.05, 0.2, <span style="color:var(--accent)">"call"</span>)  <span style="color:var(--text-3)"># → 10.45</span><br>
+          black_scholes(100, 100, 1, 0.05, 0.2, <span style="color:var(--accent)">"put"</span>)   <span style="color:var(--text-3)"># →  5.57</span>
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-3);margin-top:10px">33 lines total. No NumPy. No SciPy. No external packages — just Python's standard library.</p>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">📁</span><span class="card-title">The Rest of the Stock Toolkit</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>optionsTrade.py:</strong> An automated trading bot connected to the Moomoo brokerage API. Fetches 5-minute OHLC candles, computes RSI with TA-Lib, measures Fair Value Gaps, and fires market orders on SPY when RSI is oversold (&lt;30) and the FVG exceeds a threshold.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>ScreenshotR.py:</strong> A computer vision utility that extracts actual data points from a screenshot of a line graph. Uses OpenCV to threshold the chart image, isolates the plotted line, and converts pixel coordinates back to real axis values using <code style="font-size:0.8rem;color:var(--accent)">np.interp()</code>.</span></div>
+        </div>
       </div>
     </div>
 
@@ -171,10 +207,9 @@
       <div class="card-head"><span class="card-icon">💡</span><span class="card-title">What This Taught Me</span></div>
       <div class="card-body">
         <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>The Greeks come alive:</strong> Visualizing how option price moves as S, T, or σ changes makes delta, theta, and vega concrete — not just names on a formula sheet.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Model limitations matter:</strong> Black-Scholes assumes constant volatility — but in reality, IV changes. The "volatility smile" is the market correcting for this assumption.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Pricing ≠ value:</strong> A model price tells you what an option "should" cost given assumptions. The gap between model price and market price is where opportunity lives.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">This knowledge directly improved the <strong>Options Trading Bot</strong> — understanding how IV affects pricing helped tune the entry parameters more precisely.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Model limitations matter:</strong> Black-Scholes assumes constant volatility — but in reality, IV changes continuously. The "volatility smile" is the market correcting for this assumption. A model price is a theoretical floor, not the truth.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Pricing ≠ value:</strong> The formula gives you what an option "should" cost given the inputs. The gap between model price and market price is where real opportunity (or risk) lives — and understanding that gap is the whole point.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>You don't need NumPy for everything:</strong> Building N(x) from <code style="font-size:0.8rem;color:var(--accent)">math.erf</code> is a good reminder that Python's standard library is powerful — and keeping the implementation dependency-free makes it portable and educational.</span></div>
         </div>
       </div>
     </div>
@@ -184,10 +219,10 @@
       <div class="card-body">
         <div class="pills-row">
           <span class="pill">Python</span>
-          <span class="pill">NumPy</span>
-          <span class="pill">SciPy (stats.norm)</span>
-          <span class="pill">Matplotlib</span>
+          <span class="pill">math (stdlib only)</span>
           <span class="pill">Options Pricing Theory</span>
+          <span class="pill">Normal CDF via erf</span>
+          <span class="pill">Put-Call Parity</span>
         </div>
       </div>
     </div>

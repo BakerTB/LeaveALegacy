@@ -108,12 +108,24 @@
     <p class="hero-sub">An interactive fractal visualization and deep-zoom animation system — exploring the infinite complexity hiding in a simple complex equation.</p>
     <div class="stats-row">
       <div class="stat"><span class="stat-val">∞</span><span class="stat-lbl">Depth</span></div>
-      <div class="stat"><span class="stat-val">3</span><span class="stat-lbl">Modes</span></div>
-      <div class="stat"><span class="stat-val">9h</span><span class="stat-lbl">Built</span></div>
+      <div class="stat"><span class="stat-val">100×</span><span class="stat-lbl">Per Click</span></div>
+      <div class="stat"><span class="stat-val">800²</span><span class="stat-lbl">Pixels</span></div>
     </div>
   </div>
 
   <div class="content">
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🎬</span><span class="card-title">Deep Zoom Demo</span></div>
+      <div class="card-body">
+        <img
+          src="mandelbrot-zoom.gif"
+          alt="Mandelbrot Set deep zoom animation"
+          style="width:100%;border-radius:10px;display:block;box-shadow:0 4px 24px rgba(0,0,0,0.65);"
+        />
+        <p class="media-caption" style="font-size:11px;color:var(--text-3);letter-spacing:0.08em;text-align:center;margin-top:10px;">Click-to-zoom session — each click zooms 100× into that coordinate</p>
+      </div>
+    </div>
 
     <div class="card rev">
       <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">How I Got Here</span></div>
@@ -171,25 +183,22 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🔭</span><span class="card-title">Three Explorer Modes</span></div>
+      <div class="card-head"><span class="card-icon">🔭</span><span class="card-title">How the Explorer Works</span></div>
       <div class="card-body">
-        <div class="feature-grid">
-          <div class="feature-card">
-            <div class="feat-name">Interactive Click-to-Zoom</div>
-            <div class="feat-desc">Click anywhere on the fractal to zoom directly into that coordinate with extreme floating-point precision. Navigate Seahorse Valley, spiral arms, and mini-copies freely.</div>
-          </div>
-          <div class="feature-card">
-            <div class="feat-name">Automatic Zoom Animation</div>
-            <div class="feat-desc">A coordinate-targeted Matplotlib animation that smoothly zooms into a predefined location, frame by frame. Generates a cinematic flythrough of the fractal boundary.</div>
-          </div>
-          <div class="feature-card">
-            <div class="feat-name">Smooth Deep Zoom</div>
-            <div class="feat-desc">Continuous smooth zoom to extreme precision, targeting specific complex coordinates with sub-pixel accuracy.</div>
-          </div>
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">The explorer is an interactive Matplotlib loop. Each click re-renders the fractal centered on exactly where you clicked, at 1% of the previous window size — zooming in 100× per click. The window shrinks symmetrically around the click point.</p>
+        <div class="eq-block">
+          <div class="eq-label">Core zoom mechanism (from source)</div>
+          zoom = 0.01  <span style="color:var(--text-3)"># 1% of current window = 100× magnification per click</span><br>
+          xmin = click_x − (xmax−xmin) × zoom / 2<br>
+          xmax = click_x + (xmax−xmin) × zoom / 2<br>
+          ymin = click_y − (ymax−ymin) × zoom / 2<br>
+          ymax = click_y + (ymax−ymin) × zoom / 2
         </div>
-        <div style="margin-top:16px">
-          <div class="eq-label" style="margin-bottom:6px">Smooth Zoom Target Coordinate</div>
-          <div class="coord-box">centerx = -0.7424771234412433<br>centery =  0.2430446523427837</div>
+        <div class="hi-list" style="margin-top:14px">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Resolution:</strong> 800×800 pixel grid. Every pixel maps to a unique complex number c = (real, imag) computed from its screen position and the current window bounds.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Iteration limit:</strong> 100 iterations per pixel. Escape value is n when |Z| &gt; 2. Pixels that never escape get value 100 (black — inside the set).</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Colormap:</strong> <code style="color:var(--accent);font-size:0.8rem">inferno</code> — maps escape iteration count to a perceptually uniform yellow→red→black gradient. Fast escapes are yellow-white; slow escapes are deep red-purple; the set is black.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Interactive:</strong> Powered by Matplotlib's <code style="color:var(--accent);font-size:0.8rem">plt.ginput(1)</code> — waits for a click, reads its coordinate in data-space, and immediately re-renders at the new zoom level.</span></div>
         </div>
       </div>
     </div>

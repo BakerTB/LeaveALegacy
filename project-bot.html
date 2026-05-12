@@ -67,6 +67,18 @@
     .ind-name { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
     .ind-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.6; }
 
+    .api-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+    .api-card { background: var(--surface-2); border: 1px solid rgba(212,168,67,0.2); border-radius: 10px; padding: 14px 16px; }
+    .api-card-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+    .api-card-name { font-size: 0.85rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; font-family: 'Courier New', monospace; }
+    .api-card-desc { font-size: 0.78rem; color: var(--text-2); line-height: 1.55; }
+
+    .eq-block { background: rgba(13,30,20,0.9); border: 1px solid var(--border-hi); border-radius: 10px; padding: 16px 20px; font-family: 'Courier New', monospace; font-size: 12.5px; color: var(--text); line-height: 1.85; }
+    .eq-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+
+    .note-banner { background: rgba(212,168,67,0.06); border: 1px solid rgba(212,168,67,0.2); border-radius: 10px; padding: 12px 16px; font-size: 0.8rem; color: var(--text-2); line-height: 1.6; margin-bottom: 18px; }
+    .note-banner strong { color: var(--accent); }
+
     .result-box { background: rgba(200,165,60,0.05); border-left: 3px solid var(--accent); border: 1.5px solid var(--wood); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 20px 24px; box-shadow: inset 0 1px 0 rgba(155,107,58,0.08); }
     .result-lbl { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
     .result-big { font-size: 2rem; font-weight: 700; color: var(--text); letter-spacing: -0.03em; margin-bottom: 6px; }
@@ -94,7 +106,7 @@
   <div class="hero">
     <div class="cat-badge"><div class="cat-dot"></div>Finance</div>
     <h1 class="hero-title">Algorithm For<br>Options Trading</h1>
-    <p class="hero-sub">A fully automated stock market system powered by a triple-indicator strategy — removing emotion from every trade.</p>
+    <p class="hero-sub">A fully autonomous options trading bot connected to a live brokerage via the Alpaca API — finds contracts, sizes positions, places orders, and manages exits without any human input.</p>
     <div class="stats-row">
       <div class="stat"><span class="stat-val">$11,164</span><span class="stat-lbl">One Month</span></div>
       <div class="stat"><span class="stat-val">58h</span><span class="stat-lbl">Built</span></div>
@@ -108,41 +120,76 @@
       <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
       <div class="card-body">
         <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">An automated trading bot that <strong>executes options trades completely autonomously</strong> based on a custom triple-indicator strategy.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Built after <strong>6 years of researching and actively doing options trading</strong> — the bot encodes everything learned into rules that execute without emotion.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Developed over <strong>1.5 years</strong>, under the mentorship of Dr. Charles Lena with 4 years of coding experience behind it.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Trades through <strong>Alpaca Markets Brokerage</strong> via API — fully integrated, live execution.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">A fully autonomous options trading bot that <strong>connects to a live brokerage, discovers option contracts, sizes positions, and places orders</strong> — all without human input.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Built after <strong>6 years of researching and actively trading options</strong> — encodes years of market intuition into rules that execute consistently, without emotion or hesitation.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Developed over <strong>1.5 years</strong> under the mentorship of Dr. Charles Lena, with 4 years of coding experience behind it.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Integrated with <strong>Alpaca Markets</strong> via their Python SDK — paper trading mode for testing, live mode for real execution. Uses three separate Alpaca clients for trading, stock data, and options data.</span></div>
         </div>
       </div>
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🎯</span><span class="card-title">The Goal: Remove Emotion</span></div>
+      <div class="card-head"><span class="card-icon">🔌</span><span class="card-title">Alpaca API Integration</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:16px;line-height:1.7">The bot uses <strong>alpaca-py</strong> — Alpaca's official Python SDK — to connect three independent clients that handle different parts of the pipeline.</p>
+        <div class="eq-block" style="margin-bottom:16px">
+          <div class="eq-label">Client initialization</div>
+          trading_client     = TradingClient(API_KEY, API_SECRET, <span style="color:var(--accent)">paper=True</span>)<br>
+          stock_data_client  = StockHistoricalDataClient(API_KEY, API_SECRET)<br>
+          option_data_client = OptionHistoricalDataClient(API_KEY, API_SECRET)
+        </div>
+        <div class="api-grid">
+          <div class="api-card">
+            <div class="api-card-label">Client 1</div>
+            <div class="api-card-name">TradingClient</div>
+            <div class="api-card-desc">Places and manages orders, reads open positions, queries account P&amp;L. Handles the full order lifecycle from entry to exit. Supports paper and live modes via a single flag.</div>
+          </div>
+          <div class="api-card">
+            <div class="api-card-label">Client 2</div>
+            <div class="api-card-name">StockHistoricalDataClient</div>
+            <div class="api-card-desc">Fetches OHLCV bars and caches them in a rolling window that refreshes each candle — so the bot always has a fresh, trimmed price history without redundant API calls.</div>
+          </div>
+          <div class="api-card">
+            <div class="api-card-label">Client 3</div>
+            <div class="api-card-name">OptionHistoricalDataClient</div>
+            <div class="api-card-desc">Queries live option contract data — fetches the current bid/ask/mid premium for a specific contract symbol to estimate real fill price before committing to an order.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">⛓️</span><span class="card-title">The Execution Pipeline</span></div>
       <div class="card-body">
         <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Emotions cloud judgment.</strong> Fear, greed, and hesitation cause most retail traders to buy high and sell low. An algorithm follows exact rules every single time.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Systematic edge:</strong> A strategic blend of technical indicators creates a repeatable, testable edge — not a gut feeling.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Execution speed:</strong> The bot reacts to market conditions instantly — no hesitation, no second-guessing, no sleep needed.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Market hours check:</strong> The bot queries whether the market is currently open before doing anything. If it's outside the trading window, it calculates the exact seconds until the next window and sleeps precisely — no wasted API calls.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Contract discovery:</strong> Uses <code style="font-size:0.8rem;color:var(--accent)">GetOptionContractsRequest</code> to find the right option contract for a given underlying symbol, strike price, and expiry. Returns the actual contract object used for ordering.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Premium estimation:</strong> Before placing an order, the bot fetches the live contract premium via the options data client. Falls back through bid, ask, and mid price to always get a usable estimate — then sizes the order to a fixed notional budget.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Order placement:</strong> Uses <code style="font-size:0.8rem;color:var(--accent)">MarketOrderRequest</code> with <code style="font-size:0.8rem;color:var(--accent)">OptionLegRequest</code> to submit the trade. Quantity is computed from the notional budget divided by estimated premium — so position size scales automatically with price.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Exit monitoring:</strong> After entry, the bot polls the open position on every candle, checking live P&amp;L percentage. If a profit target is hit, it sells immediately via <code style="font-size:0.8rem;color:var(--accent)">MarketOrderRequest</code> on the other side.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Daily P&amp;L circuit breaker:</strong> Queries account-level daily P&amp;L each cycle. If the daily loss limit is exceeded, the bot blocks all new entries for the rest of the session — protecting the account from runaway losses.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Timezone-aware logging:</strong> A custom <code style="font-size:0.8rem;color:var(--accent)">ChicagoFormatter</code> timestamps every log line in Chicago (CT) time — matching market hours — so the logs are always immediately interpretable without converting timezones.</span></div>
         </div>
       </div>
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">📡</span><span class="card-title">Triple Indicator Strategy</span></div>
+      <div class="card-head"><span class="card-icon">📡</span><span class="card-title">Triple Indicator Research — The Exploration Phase</span></div>
       <div class="card-body">
-        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:18px;line-height:1.7">All three indicators must signal simultaneously for the bot to execute a trade. This requirement drastically reduces false signals — requiring confluence from three independent systems before risking capital.</p>
+        <div class="note-banner"><strong>Note:</strong> The triple-indicator approach below was an early exploration and backtesting framework — not the strategy running in the actual live bot. The live strategy is proprietary and not documented here.</div>
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:18px;line-height:1.7">During development, I explored requiring confluence from three independent indicators before triggering any trade — the idea being that a signal confirmed by three separate systems produces far fewer false positives than any single indicator alone.</p>
         <div class="indicator-grid">
           <div class="indicator-card">
             <div class="ind-name">RSI — Relative Strength Index</div>
-            <div class="ind-desc">Momentum oscillator measuring speed and magnitude of recent price changes. Signals overbought (&gt;70) and oversold (&lt;30) conditions. Built from scratch.</div>
+            <div class="ind-desc">Momentum oscillator measuring speed and magnitude of recent price changes. Signals overbought (&gt;70) and oversold (&lt;30) conditions. Implemented from scratch.</div>
           </div>
           <div class="indicator-card">
             <div class="ind-name">Fair Value Gaps (FVG)</div>
-            <div class="ind-desc">Price inefficiency zones created when a candle moves so fast it leaves a gap in price. The market often returns to fill these gaps — the bot identifies and trades this tendency.</div>
+            <div class="ind-desc">Price inefficiency zones created when a candle moves so fast it leaves a gap. The market often returns to fill these gaps — the research explored entering when price re-enters the gap zone.</div>
           </div>
           <div class="indicator-card">
             <div class="ind-name">S&amp;R Bands</div>
-            <div class="ind-desc">Dynamic bands drawn at prior session highs, lows, and closes. Price behavior near these levels has high predictive value. Custom indicator also published on TradingView.</div>
+            <div class="ind-desc">Dynamic bands at prior session highs, lows, and closes. Price behavior near these levels has high predictive value. Also published as a custom indicator on TradingView.</div>
           </div>
         </div>
       </div>
@@ -154,7 +201,7 @@
         <div class="result-box" style="margin-bottom:0">
           <div class="result-lbl">Backtesting Result — Live Simulation</div>
           <div class="result-big">$11,164</div>
-          <div class="result-detail">Generated by the algorithmic strategy in a single month — <strong>October 14 to November 14</strong> — using the Alpaca Markets paper/live brokerage environment. This result validated the triple-indicator confluence approach and confirmed the strategy had real, quantifiable edge.<br><br>See also: <a href="project-backtesting.html" style="color:var(--accent);text-decoration:none;font-weight:600">Options Trading Backtesting →</a> for the full historical analysis across 122,148 trades.</div>
+          <div class="result-detail">Generated by the algorithmic strategy in a single month — <strong>October 14 to November 14</strong> — using the Alpaca Markets paper trading environment. This result confirmed the strategy had real, quantifiable edge before committing live capital.<br><br>See also: <a href="project-backtesting.html" style="color:var(--accent);text-decoration:none;font-weight:600">Options Trading Backtesting →</a> for the full historical analysis across 122,148 trades.</div>
         </div>
       </div>
     </div>
@@ -164,12 +211,15 @@
       <div class="card-body">
         <div class="pills-row">
           <span class="pill">Python</span>
-          <span class="pill">Alpaca Markets API</span>
-          <span class="pill">RSI</span>
-          <span class="pill">Fair Value Gaps</span>
-          <span class="pill">S&amp;R Bands</span>
+          <span class="pill">alpaca-py SDK</span>
+          <span class="pill">TradingClient</span>
+          <span class="pill">OptionHistoricalDataClient</span>
+          <span class="pill">StockHistoricalDataClient</span>
+          <span class="pill">Pandas</span>
+          <span class="pill">yfinance</span>
+          <span class="pill">MarketOrderRequest</span>
+          <span class="pill">Paper Trading</span>
           <span class="pill">Options</span>
-          <span class="pill">Algorithmic Trading</span>
         </div>
       </div>
     </div>

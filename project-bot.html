@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Options Trading Bot — Truitt Baker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:           #07130B;
+      --surface:      #0D1E14;
+      --surface-2:    #163322;
+      --surface-card: rgba(22,51,34,0.75);
+      --border:       rgba(127,163,107,0.15);
+      --border-hi:    rgba(212,168,67,0.32);
+      --text:         #D7E2D3;
+      --text-2:       #8B9B8F;
+      --text-3:       #4A6B55;
+      --accent:       #D4A843;
+      --wood:         #1E3A28;
+      --wood-hi:      #3D6B4E;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 998; pointer-events: none; opacity: 0.038; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; }
+
+    .blob { position: fixed; border-radius: 50%; filter: blur(160px); pointer-events: none; z-index: 0; }
+    .blob-1 { width: 650px; height: 650px; background: rgba(212,168,67,0.07); top: -240px; right: -220px; }
+    .blob-2 { width: 450px; height: 450px; background: rgba(45,90,61,0.05); bottom: 12%; left: -180px; }
+
+    .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 14px 40px; background: rgba(7,19,11,0.84); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+    .nav-brand { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; color: var(--text); text-decoration: none; letter-spacing: 0.08em; }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; padding: 7px 14px; border: 1px solid rgba(212,168,67,0.28); border-radius: 8px; background: rgba(212,168,67,0.07); transition: all 0.2s; }
+    .nav-back:hover { color: var(--text); border-color: var(--accent); background: rgba(212,168,67,0.14); }
+
+    .hero { position: relative; z-index: 1; padding: 130px 24px 60px; text-align: center; max-width: 800px; margin: 0 auto; }
+    .cat-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 20px; padding: 5px 14px; border: 1px solid rgba(200,165,60,0.3); border-radius: 100px; background: rgba(200,165,60,0.07); }
+    .cat-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+    .hero-title { font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 5.5vw, 3.4rem); font-weight: 700; letter-spacing: 0.02em; line-height: 1.15; margin-bottom: 16px; color: var(--text); }
+    .hero-sub { color: var(--text-2); font-size: 1.05rem; max-width: 520px; margin: 0 auto 36px; line-height: 1.7; }
+
+    .stats-row { display: flex; gap: 0; justify-content: center; border: 1px solid var(--border-hi); border-radius: 12px; background: var(--surface-card); backdrop-filter: blur(12px); overflow: hidden; max-width: 540px; margin: 0 auto; box-shadow: inset 0 1px 0 rgba(212,168,67,0.08), 0 6px 28px rgba(0,0,0,0.45); }
+    .stat { padding: 16px 26px; text-align: center; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-val { display: block; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .stat-lbl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+
+    .content { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 60px 24px 100px; display: flex; flex-direction: column; gap: 24px; }
+
+    .card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 8px 30px rgba(0,0,0,0.45); position: relative; }
+    .card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(127,163,107,0.04); border-radius: 11px; pointer-events: none; z-index: 0; }
+    .card-head { display: flex; align-items: center; gap: 14px; padding: 20px 24px; border-bottom: 1px solid rgba(74,110,42,0.18); position: relative; z-index: 1; }
+    .card-icon { font-size: 20px; }
+    .card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .card-body { padding: 22px 24px; position: relative; z-index: 1; }
+
+    .hi-list { display: flex; flex-direction: column; gap: 12px; }
+    .hi { display: flex; gap: 12px; align-items: flex-start; }
+    .hi-arrow { color: var(--accent); font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+    .hi-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.65; }
+    .hi-text strong { color: var(--text); font-weight: 600; }
+
+    .indicator-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .indicator-card { background: var(--surface-2); border: 1px solid rgba(200,165,60,0.22); border-radius: 11px; padding: 16px 18px; }
+    .ind-name { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+    .ind-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.6; }
+
+    .result-box { background: rgba(200,165,60,0.05); border-left: 3px solid var(--accent); border: 1.5px solid var(--wood); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 20px 24px; box-shadow: inset 0 1px 0 rgba(155,107,58,0.08); }
+    .result-lbl { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .result-big { font-size: 2rem; font-weight: 700; color: var(--text); letter-spacing: -0.03em; margin-bottom: 6px; }
+    .result-detail { font-size: 0.85rem; color: var(--text-2); line-height: 1.6; }
+
+    .pills-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { font-size: 11.5px; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(200,165,60,0.30); color: var(--accent); font-weight: 500; background: rgba(200,165,60,0.06); }
+
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border: 1.5px solid var(--wood); border-radius: 10px; color: var(--text-2); font-size: 13px; font-weight: 500; text-decoration: none; background: rgba(12,22,8,0.6); transition: all 0.2s; margin-top: 16px; }
+    .back-btn:hover { border-color: var(--wood-hi); color: var(--text); }
+
+    .rev { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .rev.in { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">Truitt Baker</a>
+    <a href="projects.html" class="nav-back">← All Projects</a>
+  </nav>
+
+  <div class="hero">
+    <div class="cat-badge"><div class="cat-dot"></div>Finance</div>
+    <h1 class="hero-title">Algorithm For<br>Options Trading</h1>
+    <p class="hero-sub">A fully automated stock market system powered by a triple-indicator strategy — removing emotion from every trade.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-val">$11,164</span><span class="stat-lbl">One Month</span></div>
+      <div class="stat"><span class="stat-val">58h</span><span class="stat-lbl">Built</span></div>
+      <div class="stat"><span class="stat-val">6 yrs</span><span class="stat-lbl">Research</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">An automated trading bot that <strong>executes options trades completely autonomously</strong> based on a custom triple-indicator strategy.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Built after <strong>6 years of researching and actively doing options trading</strong> — the bot encodes everything learned into rules that execute without emotion.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Developed over <strong>1.5 years</strong>, under the mentorship of Dr. Charles Lena with 4 years of coding experience behind it.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Trades through <strong>Alpaca Markets Brokerage</strong> via API — fully integrated, live execution.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🎯</span><span class="card-title">The Goal: Remove Emotion</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Emotions cloud judgment.</strong> Fear, greed, and hesitation cause most retail traders to buy high and sell low. An algorithm follows exact rules every single time.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Systematic edge:</strong> A strategic blend of technical indicators creates a repeatable, testable edge — not a gut feeling.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Execution speed:</strong> The bot reacts to market conditions instantly — no hesitation, no second-guessing, no sleep needed.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">📡</span><span class="card-title">Triple Indicator Strategy</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:18px;line-height:1.7">All three indicators must signal simultaneously for the bot to execute a trade. This requirement drastically reduces false signals — requiring confluence from three independent systems before risking capital.</p>
+        <div class="indicator-grid">
+          <div class="indicator-card">
+            <div class="ind-name">RSI — Relative Strength Index</div>
+            <div class="ind-desc">Momentum oscillator measuring speed and magnitude of recent price changes. Signals overbought (&gt;70) and oversold (&lt;30) conditions. Built from scratch.</div>
+          </div>
+          <div class="indicator-card">
+            <div class="ind-name">Fair Value Gaps (FVG)</div>
+            <div class="ind-desc">Price inefficiency zones created when a candle moves so fast it leaves a gap in price. The market often returns to fill these gaps — the bot identifies and trades this tendency.</div>
+          </div>
+          <div class="indicator-card">
+            <div class="ind-name">S&amp;R Bands</div>
+            <div class="ind-desc">Dynamic bands drawn at prior session highs, lows, and closes. Price behavior near these levels has high predictive value. Custom indicator also published on TradingView.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">💰</span><span class="card-title">Results</span></div>
+      <div class="card-body">
+        <div class="result-box" style="margin-bottom:0">
+          <div class="result-lbl">Backtesting Result — Live Simulation</div>
+          <div class="result-big">$11,164</div>
+          <div class="result-detail">Generated by the algorithmic strategy in a single month — <strong>October 14 to November 14</strong> — using the Alpaca Markets paper/live brokerage environment. This result validated the triple-indicator confluence approach and confirmed the strategy had real, quantifiable edge.<br><br>See also: <a href="project-backtesting.html" style="color:var(--accent);text-decoration:none;font-weight:600">Options Trading Backtesting →</a> for the full historical analysis across 122,148 trades.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-body">
+        <div class="pills-row">
+          <span class="pill">Python</span>
+          <span class="pill">Alpaca Markets API</span>
+          <span class="pill">RSI</span>
+          <span class="pill">Fair Value Gaps</span>
+          <span class="pill">S&amp;R Bands</span>
+          <span class="pill">Options</span>
+          <span class="pill">Algorithmic Trading</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="projects.html" class="back-btn rev">← Back to All Projects</a>
+
+  </div>
+
+  <script>
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rev').forEach(el => ro.observe(el));
+  </script>
+</body>
+</html>

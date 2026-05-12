@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hangman Game & Solver — Truitt Baker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:           #07130B;
+      --surface:      #0D1E14;
+      --surface-2:    #163322;
+      --surface-card: rgba(22,51,34,0.75);
+      --border:       rgba(127,163,107,0.15);
+      --border-hi:    rgba(139,168,160,0.32);
+      --text:         #D7E2D3;
+      --text-2:       #8B9B8F;
+      --text-3:       #4A6B55;
+      --accent:       #8BA8A0;
+      --wood:         #1E3A28;
+      --wood-hi:      #3D6B4E;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+
+    body::before { content: ''; position: fixed; inset: 0; z-index: 998; pointer-events: none; opacity: 0.038; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; }
+    .vignette { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(ellipse 110% 110% at 50% 50%, transparent 38%, rgba(7,19,11,0.65) 100%); }
+    .blob { position: fixed; border-radius: 50%; filter: blur(160px); pointer-events: none; z-index: 0; }
+    .blob-1 { width: 650px; height: 650px; background: rgba(139,168,160,0.07); top: -240px; right: -220px; }
+    .blob-2 { width: 450px; height: 450px; background: rgba(45,90,61,0.05); bottom: 12%; left: -180px; }
+
+    .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 14px 40px; background: rgba(7,19,11,0.84); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+    .nav-brand { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; color: var(--text); text-decoration: none; letter-spacing: 0.08em; }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; padding: 7px 14px; border: 1px solid var(--border-hi); border-radius: 8px; background: rgba(139,168,160,0.06); transition: all 0.2s; }
+    .nav-back:hover { color: var(--text); border-color: var(--accent); background: rgba(139,168,160,0.12); }
+
+    .hero { position: relative; z-index: 1; padding: 130px 24px 60px; text-align: center; max-width: 800px; margin: 0 auto; }
+    .cat-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 20px; padding: 5px 14px; border: 1px solid rgba(139,168,160,0.30); border-radius: 100px; background: rgba(139,168,160,0.07); }
+    .cat-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+    .hero-title { font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 5.5vw, 3.4rem); font-weight: 700; letter-spacing: 0.02em; line-height: 1.15; margin-bottom: 16px; color: var(--text); }
+    .hero-sub { color: var(--text-2); font-size: 1.05rem; max-width: 520px; margin: 0 auto 36px; line-height: 1.7; }
+    .stats-row { display: flex; gap: 0; justify-content: center; border: 1px solid var(--border-hi); border-radius: 12px; background: var(--surface-card); backdrop-filter: blur(12px); overflow: hidden; max-width: 440px; margin: 0 auto; box-shadow: inset 0 1px 0 rgba(139,168,160,0.08), 0 6px 28px rgba(0,0,0,0.45); }
+    .stat { padding: 16px 28px; text-align: center; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-val { display: block; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .stat-lbl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+
+    .content { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 60px 24px 100px; display: flex; flex-direction: column; gap: 24px; }
+
+    .card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 8px 30px rgba(0,0,0,0.45); position: relative; }
+    .card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(127,163,107,0.04); border-radius: 11px; pointer-events: none; z-index: 0; }
+    .card-head { display: flex; align-items: center; gap: 14px; padding: 20px 24px; border-bottom: 1px solid var(--border); position: relative; z-index: 1; }
+    .card-icon { font-size: 20px; }
+    .card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .card-body { padding: 22px 24px; position: relative; z-index: 1; }
+
+    .hi-list { display: flex; flex-direction: column; gap: 12px; }
+    .hi { display: flex; gap: 12px; align-items: flex-start; }
+    .hi-arrow { color: var(--accent); font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+    .hi-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.7; }
+    .hi-text strong { color: var(--text); font-weight: 600; }
+
+    .solver-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .solver-card { background: rgba(13,30,20,0.8); border: 1px solid rgba(139,168,160,0.22); border-radius: 12px; padding: 20px 22px; }
+    .solver-label { font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-3); margin-bottom: 8px; }
+    .solver-name { font-size: 0.95rem; font-weight: 700; color: var(--accent); margin-bottom: 10px; }
+    .solver-desc { font-size: 0.82rem; color: var(--text-2); line-height: 1.65; }
+
+    .pills-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { font-size: 11.5px; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(139,168,160,0.28); color: var(--accent); font-weight: 500; background: rgba(139,168,160,0.06); }
+
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border: 1px solid var(--border-hi); border-radius: 10px; color: var(--text-2); font-size: 13px; font-weight: 500; text-decoration: none; background: rgba(13,30,20,0.7); transition: all 0.2s; margin-top: 16px; backdrop-filter: blur(8px); }
+    .back-btn:hover { border-color: var(--accent); color: var(--text); }
+
+    .rev { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .rev.in { opacity: 1; transform: none; }
+    @media (max-width: 600px) { .top-nav { padding: 12px 20px; } .solver-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="vignette"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">Truitt Baker</a>
+    <a href="projects.html" class="nav-back">← All Projects</a>
+  </nav>
+
+  <div class="hero">
+    <div class="cat-badge"><div class="cat-dot"></div>Software &amp; STEM</div>
+    <h1 class="hero-title">Hangman Game<br>&amp; Solver GUI</h1>
+    <p class="hero-sub">A Python GUI that plays Hangman and lets two different solving algorithms compete — one using pure letter frequency, the other using a more intelligent pattern approach.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-val">6</span><span class="stat-lbl">Hours</span></div>
+      <div class="stat"><span class="stat-val">2 wks</span><span class="stat-lbl">Built</span></div>
+      <div class="stat"><span class="stat-val">2</span><span class="stat-lbl">Solvers</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Programmed and designed a <strong>full Hangman game with a graphical GUI in Python</strong> — then built two different solver algorithms that can play and be watched in real time.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">The core question: <strong>how do you optimally solve Hangman?</strong> Is it pure letter frequency? Pattern matching? The project explores both methods and compares their performance.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Built Fall 2024 — 3 hrs/week over 2 weeks.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🤖</span><span class="card-title">Two Solvers Compared</span></div>
+      <div class="card-body">
+        <div class="solver-grid">
+          <div class="solver-card">
+            <div class="solver-label">Method 01</div>
+            <div class="solver-name">Bot Solver</div>
+            <div class="solver-desc">Uses letter frequency data from English word lists to rank guesses. Starts with the most common letters (E, T, A, O, I...) and works systematically through likelihood — no word-pattern context used.</div>
+          </div>
+          <div class="solver-card">
+            <div class="solver-label">Method 02</div>
+            <div class="solver-name">AI Solver</div>
+            <div class="solver-desc">Pattern-aware solver that cross-references the known letter positions with a dictionary to narrow possible words at each step. Guesses based on which letters appear most often in the remaining candidate words — not just English overall.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🔬</span><span class="card-title">Why This Is a Real CS Problem</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Information theory at its core:</strong> Each guess reveals information about the hidden word. The optimal solver maximizes expected information gain per guess — exactly what the AI solver approximates.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Search space reduction:</strong> The AI solver's power comes from pruning — with every reveal, the set of possible words shrinks dramatically. Smart guessing makes this shrink faster.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>The Bot vs. AI gap:</strong> The Bot's flaw is using global frequency data rather than the frequency within the filtered word set. The AI fixes this by recomputing per step.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Real-time visualization:</strong> Watching both solvers play side-by-side in the GUI makes the strategy difference immediately visible — you see the AI narrow in faster.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-body">
+        <div class="pills-row">
+          <span class="pill">Python</span>
+          <span class="pill">Tkinter GUI</span>
+          <span class="pill">Dictionary / Word Lists</span>
+          <span class="pill">Letter Frequency Analysis</span>
+          <span class="pill">Pattern Matching</span>
+          <span class="pill">Algorithm Design</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="projects.html" class="back-btn rev">← Back to All Projects</a>
+  </div>
+
+  <script>
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rev').forEach(el => ro.observe(el));
+  </script>
+</body>
+</html>

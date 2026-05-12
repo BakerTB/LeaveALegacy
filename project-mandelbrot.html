@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mandelbrot Set — Truitt Baker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:           #07130B;
+      --surface:      #0D1E14;
+      --surface-2:    #163322;
+      --surface-card: rgba(22,51,34,0.75);
+      --border:       rgba(127,163,107,0.15);
+      --border-hi:    rgba(107,191,138,0.32);
+      --text:         #D7E2D3;
+      --text-2:       #8B9B8F;
+      --text-3:       #4A6B55;
+      --accent:       #6BBF8A;
+      --wood:         #1E3A28;
+      --wood-hi:      #3D6B4E;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 998; pointer-events: none; opacity: 0.038; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; }
+
+    .blob { position: fixed; border-radius: 50%; filter: blur(160px); pointer-events: none; z-index: 0; }
+    .blob-1 { width: 650px; height: 650px; background: rgba(107,191,138,0.07); top: -240px; right: -220px; }
+    .blob-2 { width: 420px; height: 420px; background: rgba(45,90,61,0.05); bottom: 10%; left: -160px; }
+
+    .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 14px 40px; background: rgba(7,19,11,0.84); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+    .nav-brand { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; color: var(--text); text-decoration: none; letter-spacing: 0.08em; }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; padding: 7px 14px; border: 1px solid var(--border-hi); border-radius: 8px; background: rgba(107,191,138,0.06); transition: all 0.2s; }
+    .nav-back:hover { color: var(--text); border-color: var(--accent); background: rgba(107,191,138,0.12); }
+
+    .hero { position: relative; z-index: 1; padding: 130px 24px 60px; text-align: center; max-width: 800px; margin: 0 auto; }
+    .cat-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 20px; padding: 5px 14px; border: 1px solid rgba(107,191,138,0.30); border-radius: 100px; background: rgba(107,191,138,0.07); }
+    .cat-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+    .hero-title { font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 5.5vw, 3.4rem); font-weight: 700; letter-spacing: 0.02em; line-height: 1.15; margin-bottom: 16px; color: var(--text); }
+    .hero-sub { color: var(--text-2); font-size: 1.05rem; max-width: 520px; margin: 0 auto 36px; line-height: 1.7; }
+    .stats-row { display: flex; gap: 0; justify-content: center; border: 1px solid var(--border-hi); border-radius: 12px; background: var(--surface-card); backdrop-filter: blur(12px); overflow: hidden; max-width: 440px; margin: 0 auto; box-shadow: inset 0 1px 0 rgba(107,191,138,0.08), 0 6px 28px rgba(0,0,0,0.45); }
+    .stat { padding: 16px 28px; text-align: center; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-val { display: block; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .stat-lbl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+
+    .content { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 60px 24px 100px; display: flex; flex-direction: column; gap: 24px; }
+
+    .card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 8px 30px rgba(0,0,0,0.45); position: relative; }
+    .card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(127,163,107,0.04); border-radius: 11px; pointer-events: none; z-index: 0; }
+    .card-head { display: flex; align-items: center; gap: 14px; padding: 20px 24px; border-bottom: 1px solid rgba(74,110,42,0.18); position: relative; z-index: 1; }
+    .card-icon { font-size: 20px; }
+    .card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+    .card-body { padding: 22px 24px; position: relative; z-index: 1; }
+
+    .hi-list { display: flex; flex-direction: column; gap: 12px; }
+    .hi { display: flex; gap: 12px; align-items: flex-start; }
+    .hi-arrow { color: var(--accent); font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+    .hi-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.65; }
+    .hi-text strong { color: var(--text); font-weight: 600; }
+
+    .eq-block { background: var(--surface-2); border: 1px solid var(--border-hi); border-radius: 10px; padding: 16px 20px; font-family: 'Courier New', monospace; font-size: 13px; color: var(--text); line-height: 1.85; margin-top: 14px; }
+    .eq-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+
+    /* Region cards */
+    .region-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+    .region-card { background: var(--surface-2); border: 1px solid rgba(120,192,104,0.16); border-radius: 10px; padding: 14px 16px; text-align: center; }
+    .region-emoji { font-size: 22px; margin-bottom: 7px; display: block; }
+    .region-name { font-size: 0.78rem; font-weight: 700; color: var(--accent); margin-bottom: 5px; }
+    .region-desc { font-size: 0.75rem; color: var(--text-2); line-height: 1.5; }
+
+    /* Feature cards */
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+    .feature-card { background: var(--surface-2); border: 1px solid rgba(120,192,104,0.18); border-radius: 11px; padding: 16px 18px; }
+    .feat-name { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+    .feat-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.6; }
+
+    .coord-box { background: var(--surface-2); border: 1px solid var(--border-hi); border-radius: 10px; padding: 14px 18px; font-family: 'Courier New', monospace; font-size: 12.5px; color: var(--text); }
+
+    .result-box { background: rgba(120,192,104,0.04); border-left: 3px solid var(--accent); border: 1.5px solid var(--wood); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 18px 22px; box-shadow: inset 0 1px 0 rgba(155,107,58,0.08); }
+    .result-lbl { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .result-text { font-size: 0.875rem; color: var(--text); line-height: 1.7; }
+
+    .pills-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { font-size: 11.5px; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(120,192,104,0.28); color: var(--accent); font-weight: 500; background: rgba(120,192,104,0.06); }
+
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border: 1.5px solid var(--wood); border-radius: 10px; color: var(--text-2); font-size: 13px; font-weight: 500; text-decoration: none; background: rgba(12,22,8,0.6); transition: all 0.2s; margin-top: 16px; }
+    .back-btn:hover { border-color: var(--wood-hi); color: var(--text); }
+
+    .rev { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .rev.in { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">Truitt Baker</a>
+    <a href="projects.html" class="nav-back">← All Projects</a>
+  </nav>
+
+  <div class="hero">
+    <div class="cat-badge"><div class="cat-dot"></div>Physics &amp; Math</div>
+    <h1 class="hero-title">Mandelbrot Set<br>Explorer</h1>
+    <p class="hero-sub">An interactive fractal visualization and deep-zoom animation system — exploring the infinite complexity hiding in a simple complex equation.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-val">∞</span><span class="stat-lbl">Depth</span></div>
+      <div class="stat"><span class="stat-val">3</span><span class="stat-lbl">Modes</span></div>
+      <div class="stat"><span class="stat-val">9h</span><span class="stat-lbl">Built</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">How I Got Here</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">My brother, a <strong>philosophy major at CU Boulder</strong>, uses the Mandelbrot set to construct philosophical arguments — the idea that infinite complexity emerges from simple rules fascinated me.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Reading <strong>David Foster Wallace's "Infinite Jest"</strong> — whose structure mirrors fractal self-similarity — reinforced this interest and pushed me to actually build it.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">The project became a deep dive into <strong>complex number iteration and visualization</strong> — one of the most beautiful intersections of pure math and computer graphics.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🔢</span><span class="card-title">What Is the Mandelbrot Set?</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:10px;line-height:1.7">First described by Benoit Mandelbrot in the 1970s, the Mandelbrot set is defined by a surprisingly simple rule applied to complex numbers — yet it produces boundless geometric complexity at every scale of magnification.</p>
+        <div class="eq-block">
+          <div class="eq-label">The Core Iteration</div>
+          Z_{n+1} = Z_n² + C<br><br>
+          Start with Z₀ = 0<br>
+          A complex number C is in the Mandelbrot set if |Z_n| never exceeds 2<br>
+          (i.e., the sequence remains bounded)<br><br>
+          If |Z_n| &gt; 2 for some n → C escapes → not in the set → colored by escape speed
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🗺️</span><span class="card-title">Named Regions</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:16px;line-height:1.7">The Mandelbrot set contains famous named sub-regions, each with its own visual character and mathematical properties. The explorer was built specifically to zoom into these areas.</p>
+        <div class="region-grid">
+          <div class="region-card">
+            <span class="region-emoji">🐚</span>
+            <div class="region-name">Seahorse Valley</div>
+            <div class="region-desc">A region near the boundary where shapes resemble cascading seahorse spirals.</div>
+          </div>
+          <div class="region-card">
+            <span class="region-emoji">🌀</span>
+            <div class="region-name">Triple Spiral Valley</div>
+            <div class="region-desc">Dense triple-arm spirals revealing self-similar structure at extreme zoom.</div>
+          </div>
+          <div class="region-card">
+            <span class="region-emoji">🪡</span>
+            <div class="region-name">Valley of the Needles</div>
+            <div class="region-desc">Thin tendrils extending outward, resembling needle-like filaments in fractal foam.</div>
+          </div>
+          <div class="region-card">
+            <span class="region-emoji">⭕</span>
+            <div class="region-name">Mini Mandelbrot</div>
+            <div class="region-desc">A complete miniature copy of the entire Mandelbrot set, found embedded in the boundary regions.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🔭</span><span class="card-title">Three Explorer Modes</span></div>
+      <div class="card-body">
+        <div class="feature-grid">
+          <div class="feature-card">
+            <div class="feat-name">Interactive Click-to-Zoom</div>
+            <div class="feat-desc">Click anywhere on the fractal to zoom directly into that coordinate with extreme floating-point precision. Navigate Seahorse Valley, spiral arms, and mini-copies freely.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feat-name">Automatic Zoom Animation</div>
+            <div class="feat-desc">A coordinate-targeted Matplotlib animation that smoothly zooms into a predefined location, frame by frame. Generates a cinematic flythrough of the fractal boundary.</div>
+          </div>
+          <div class="feature-card">
+            <div class="feat-name">Smooth Deep Zoom</div>
+            <div class="feat-desc">Continuous smooth zoom to extreme precision, targeting specific complex coordinates with sub-pixel accuracy.</div>
+          </div>
+        </div>
+        <div style="margin-top:16px">
+          <div class="eq-label" style="margin-bottom:6px">Smooth Zoom Target Coordinate</div>
+          <div class="coord-box">centerx = -0.7424771234412433<br>centery =  0.2430446523427837</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">⚠️</span><span class="card-title">Limitations &amp; Honest Assessment</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Incredibly slow:</strong> Pure Python iteration over millions of pixels is computationally expensive. Each deep-zoom frame can take minutes to render.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Diminishing returns:</strong> At extreme zoom depths, floating-point precision limits prevent meaningful new detail — the image degrades to numerical noise.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Higher memory usage:</strong> Storing coordinate arrays for full-resolution renders at deep zoom levels requires significant memory.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🚀</span><span class="card-title">Future Plans</span></div>
+      <div class="card-body">
+        <div class="result-box">
+          <div class="result-lbl">What's Next</div>
+          <div class="result-text">
+            <strong>Parallel processing</strong> — NumPy vectorization and multiprocessing to speed up rendering by 10–100×.<br><br>
+            <strong>Fractal Art Gallery</strong> — A curated set of the most visually striking coordinates, rendered at poster resolution.<br><br>
+            <strong>3D Mandelbrot (Mandelbulb)</strong> — Extending the iteration into 3D space using hypercomplex numbers for volumetric fractal geometry.<br><br>
+            <strong>Interactive web version</strong> — GPU-accelerated rendering in the browser for real-time fractal exploration.<br><br>
+            <strong>Other fractal sets</strong> — Julia sets, Burning Ship fractal, and Newton fractals using similar iteration techniques.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-body">
+        <div class="pills-row">
+          <span class="pill">Python</span>
+          <span class="pill">Matplotlib</span>
+          <span class="pill">Complex Math</span>
+          <span class="pill">Animation</span>
+          <span class="pill">NumPy</span>
+          <span class="pill">Fractal Geometry</span>
+          <span class="pill">Visualization</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="projects.html" class="back-btn rev">← Back to All Projects</a>
+
+  </div>
+
+  <script>
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rev').forEach(el => ro.observe(el));
+  </script>
+</body>
+</html>

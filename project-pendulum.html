@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Double Pendulum — Truitt Baker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg:           #07130B;
+      --surface:      #0D1E14;
+      --surface-2:    #163322;
+      --surface-card: rgba(22,51,34,0.75);
+      --border:       rgba(127,163,107,0.15);
+      --border-hi:    rgba(107,191,138,0.32);
+      --text:         #D7E2D3;
+      --text-2:       #8B9B8F;
+      --text-3:       #4A6B55;
+      --accent:       #6BBF8A;
+      --wood:         #1E3A28;
+      --wood-hi:      #3D6B4E;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; font-size: 15px; line-height: 1.6; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; z-index: 998; pointer-events: none; opacity: 0.038; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 200px 200px; }
+
+    .blob { position: fixed; border-radius: 50%; filter: blur(160px); pointer-events: none; z-index: 0; }
+    .blob-1 { width: 650px; height: 650px; background: rgba(107,191,138,0.07); top: -240px; right: -220px; }
+    .blob-2 { width: 450px; height: 450px; background: rgba(45,90,61,0.05); bottom: 12%; left: -180px; }
+
+    /* NAV */
+    .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 14px 40px; background: rgba(7,19,11,0.84); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+    .nav-brand { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; color: var(--text); text-decoration: none; letter-spacing: 0.08em; }
+    .nav-back { font-size: 13px; font-weight: 500; color: var(--text-2); text-decoration: none; padding: 7px 14px; border: 1px solid var(--border-hi); border-radius: 8px; background: rgba(82,150,58,0.07); transition: all 0.2s; }
+    .nav-back:hover { color: var(--text); border-color: var(--accent); background: rgba(120,192,104,0.12); }
+
+    /* HERO */
+    .hero { position: relative; z-index: 1; padding: 130px 24px 60px; text-align: center; max-width: 800px; margin: 0 auto; }
+    .cat-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 20px; padding: 5px 14px; border: 1px solid rgba(120,192,104,0.3); border-radius: 100px; background: rgba(120,192,104,0.07); }
+    .cat-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+    .hero-title { font-family: 'Cinzel', serif; font-size: clamp(1.8rem, 5.5vw, 3.4rem); font-weight: 700; letter-spacing: 0.02em; line-height: 1.15; margin-bottom: 16px; color: var(--text); }
+    .hero-sub { color: var(--text-2); font-size: 1.05rem; max-width: 500px; margin: 0 auto 36px; }
+    .stats-row { display: flex; gap: 0; justify-content: center; border: 1px solid var(--border-hi); border-radius: 12px; background: var(--surface-card); backdrop-filter: blur(12px); overflow: hidden; max-width: 440px; margin: 0 auto; box-shadow: inset 0 1px 0 rgba(107,191,138,0.08), 0 6px 28px rgba(0,0,0,0.45); }
+    .stat { padding: 16px 28px; text-align: center; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-val { display: block; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; }
+    .stat-lbl { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin-top: 2px; }
+
+    /* CONTENT */
+    .content { position: relative; z-index: 1; max-width: 760px; margin: 0 auto; padding: 60px 24px 100px; display: flex; flex-direction: column; gap: 24px; }
+
+    /* Moss stone card */
+    .card { background: var(--surface-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; backdrop-filter: blur(12px); box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 8px 30px rgba(0,0,0,0.45); position: relative; }
+    .card::before { content: ''; position: absolute; inset: 5px; border: 1px solid rgba(127,163,107,0.04); border-radius: 11px; pointer-events: none; z-index: 0; }
+    .card-head { display: flex; align-items: center; gap: 14px; padding: 20px 24px; border-bottom: 1px solid var(--border); position: relative; z-index: 1; }
+    .card-icon { font-size: 20px; }
+    .card-title { font-size: 0.95rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); }
+    .card-body { padding: 22px 24px; position: relative; z-index: 1; }
+
+    /* Highlight list */
+    .hi-list { display: flex; flex-direction: column; gap: 12px; }
+    .hi { display: flex; gap: 12px; align-items: flex-start; }
+    .hi-arrow { color: var(--accent); font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 4px; }
+    .hi-text { font-size: 0.875rem; color: var(--text-2); line-height: 1.65; }
+    .hi-text strong { color: var(--text); font-weight: 600; }
+
+    /* Method block */
+    .method-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+    .method-card { background: var(--surface-2); border: 1px solid var(--border-hi); border-radius: 11px; padding: 16px 18px; }
+    .method-name { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 7px; letter-spacing: 0.02em; }
+    .method-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.6; }
+
+    /* Tech pills */
+    .pills-row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { font-size: 11.5px; padding: 4px 12px; border-radius: 100px; border: 1px solid rgba(120,192,104,0.3); color: var(--accent); font-weight: 500; background: rgba(120,192,104,0.06); }
+
+    /* Equation block */
+    .eq-block { background: var(--surface-2); border: 1px solid var(--border-hi); border-radius: 10px; padding: 16px 20px; font-family: 'Courier New', monospace; font-size: 13px; color: var(--text); line-height: 1.8; }
+    .eq-label { font-family: 'Inter', sans-serif; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+
+    /* Result callout */
+    .result-box { background: rgba(120,192,104,0.05); border: 1.5px solid var(--wood); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 18px 22px; box-shadow: inset 0 1px 0 rgba(155,107,58,0.08); }
+    .result-lbl { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+    .result-text { font-size: 0.9rem; color: var(--text); line-height: 1.7; }
+
+    /* Back button */
+    .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border: 1.5px solid var(--wood); border-radius: 10px; color: var(--text-2); font-size: 13px; font-weight: 500; text-decoration: none; background: rgba(12,22,8,0.6); transition: all 0.2s; margin-top: 16px; }
+    .back-btn:hover { border-color: var(--wood-hi); color: var(--text); }
+
+    .rev { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
+    .rev.in { opacity: 1; transform: none; }
+  </style>
+</head>
+<body>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">Truitt Baker</a>
+    <a href="projects.html" class="nav-back">← All Projects</a>
+  </nav>
+
+  <div class="hero">
+    <div class="cat-badge"><div class="cat-dot"></div>Physics &amp; Math</div>
+    <h1 class="hero-title">Double Pendulum<br>Simulations</h1>
+    <p class="hero-sub">Comparing three numerical integration methods on a chaotic physical system — Euler, RK4, and Runge-Kutta-Nyström.</p>
+    <div class="stats-row">
+      <div class="stat"><span class="stat-val">40</span><span class="stat-lbl">Hours</span></div>
+      <div class="stat"><span class="stat-val">3</span><span class="stat-lbl">Simulations</span></div>
+      <div class="stat"><span class="stat-val">18k</span><span class="stat-lbl">Data Points</span></div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
+      <div class="card-body">
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Built <strong>three working double pendulum GUI simulations</strong> in Python, each using a different numerical integration method.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Self-taught <strong>derivatives and differential equations</strong> while still enrolled in Pre-Calculus — the physics demanded it.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Analyzed approximately <strong>18,000 lines of output data</strong> to compare the accuracy and stability of each method.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Mentored by <strong>Dr. Charles Lena</strong>, Episcopal School of Dallas.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">⚙️</span><span class="card-title">System Description</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:18px;line-height:1.7">A double pendulum consists of two pendulums attached end-to-end — the second pendulum hangs from the tip of the first. Despite the simple setup, the system exhibits <strong style="color:var(--text)">chaotic behavior</strong>: tiny differences in initial conditions lead to wildly different trajectories, making it a fascinating and challenging system to simulate numerically.</p>
+        <div class="eq-block">
+          <div class="eq-label">Governing Equations — Second Order ODE System</div>
+          θ₁̈ = f(θ₁, θ₂, θ̇₁, θ̇₂, m₁, m₂, L₁, L₂, g)<br>
+          θ₂̈ = f(θ₁, θ₂, θ̇₁, θ̇₂, m₁, m₂, L₁, L₂, g)
+        </div>
+        <p style="font-size:0.8rem;color:var(--text-3);margin-top:10px">The equations are derived from the Lagrangian formulation and express angular acceleration of each arm as a function of all state variables — angles, velocities, masses, lengths, and gravity.</p>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🔋</span><span class="card-title">Energy Conservation</span></div>
+      <div class="card-body">
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">One key way to validate any numerical simulation of a physical system is energy conservation. In a frictionless double pendulum, the total mechanical energy (kinetic + potential) should remain constant over time.</p>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Kinetic Energy (T):</strong> sum of rotational kinetic energy of both arms, dependent on masses, lengths, and angular velocities.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Potential Energy (V):</strong> gravitational PE relative to the pivot, dependent on angles and heights of each bob.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Total Energy E = T + V</strong> should be conserved. Drift in this quantity indicates numerical error — a clear metric for comparing methods.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">📐</span><span class="card-title">Three Numerical Methods Compared</span></div>
+      <div class="card-body">
+        <div class="method-grid">
+          <div class="method-card">
+            <div class="method-name">Euler's Method</div>
+            <div class="method-desc">First-order technique. Uses the current slope (derivative) to step forward in time. Simple to implement but accumulates significant error over time — energy drift is visible early.</div>
+          </div>
+          <div class="method-card">
+            <div class="method-name">Runge-Kutta 4th Order (RK4)</div>
+            <div class="method-desc">Computes four derivative estimates within each time step and takes a weighted average. Dramatically more accurate than Euler. Considered the standard for most physical simulations.</div>
+          </div>
+          <div class="method-card">
+            <div class="method-name">Runge-Kutta-Nyström (RKN)</div>
+            <div class="method-desc">A specialized variant of RK methods designed specifically for second-order ODEs. Avoids converting to first-order form, making it more efficient and accurate for mechanical systems like pendulums.</div>
+          </div>
+        </div>
+        <div style="margin-top:18px">
+          <div class="eq-label" style="margin-bottom:8px">Butcher Tableau — RK4 Coefficients</div>
+          <div class="eq-block" style="font-size:12px">
+            k₁ = h·f(xₙ, yₙ)<br>
+            k₂ = h·f(xₙ + h/2, yₙ + k₁/2)<br>
+            k₃ = h·f(xₙ + h/2, yₙ + k₂/2)<br>
+            k₄ = h·f(xₙ + h,   yₙ + k₃)<br>
+            yₙ₊₁ = yₙ + (k₁ + 2k₂ + 2k₃ + k₄) / 6
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">📊</span><span class="card-title">Results &amp; Analysis</span></div>
+      <div class="card-body">
+        <div class="result-box" style="margin-bottom:18px">
+          <div class="result-lbl">Key Finding</div>
+          <div class="result-text">Analyzed ~18,000 lines of simulation output. RKN outperformed both Euler and RK4 on energy conservation over long simulation times for second-order systems — confirming that method selection matters significantly for chaotic dynamics.</div>
+        </div>
+        <div class="hi-list">
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Euler:</strong> Fastest to implement, but visible energy drift within seconds of simulation time. Not reliable for long-horizon chaotic systems.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>RK4:</strong> Dramatically better accuracy. Standard choice for most physics simulations. Small but nonzero energy drift over very long periods.</span></div>
+          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>RKN:</strong> Most accurate for this system. Since the governing equations are natively second-order, RKN avoids the overhead of first-order conversion and maintains energy conservation longest.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-body">
+        <div class="pills-row">
+          <span class="pill">Python</span>
+          <span class="pill">GUI (Tkinter)</span>
+          <span class="pill">Euler Method</span>
+          <span class="pill">RK4</span>
+          <span class="pill">RKN</span>
+          <span class="pill">Data Analysis</span>
+          <span class="pill">Matplotlib</span>
+          <span class="pill">NumPy</span>
+        </div>
+      </div>
+    </div>
+
+    <a href="projects.html" class="back-btn rev">← Back to All Projects</a>
+
+  </div>
+
+  <script>
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rev').forEach(el => ro.observe(el));
+  </script>
+</body>
+</html>

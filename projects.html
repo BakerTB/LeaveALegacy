@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — Truitt Baker</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:           #07130B;
+      --surface:      #0D1E14;
+      --surface-2:    #163322;
+      --surface-card: rgba(22,51,34,0.75);
+      --border:       rgba(127,163,107,0.15);
+      --border-hi:    rgba(127,163,107,0.32);
+      --text:         #D7E2D3;
+      --text-2:       #8B9B8F;
+      --text-3:       #4A6B55;
+      --accent:       #7FA36B;
+      --wood:         #1E3A28;
+      --wood-hi:      #3D6B4E;
+      --wood-light:   #A8C896;
+      --physics:      #6BBF8A;
+      --finance:      #D4A843;
+      --software:     #8BA8A0;
+      --teaching:     #9875c8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', 'Manrope', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── Grain texture ─────────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 998;
+      pointer-events: none;
+      opacity: 0.038;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ── Spores canvas ─────────────────────────────────── */
+    #spores-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── Fog layer ─────────────────────────────────────── */
+    .fog-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 130% 55% at 15% 110%, rgba(127,163,107,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 90% 45% at 85% -5%,  rgba(127,163,107,0.04) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 50% 50%,  rgba(45,90,61,0.03)   0%, transparent 70%);
+      animation: fog-drift 22s ease-in-out infinite alternate;
+    }
+    @keyframes fog-drift {
+      0%   { transform: translateX(-4%) translateY(0) scale(1.02); opacity: 0.65; }
+      50%  { opacity: 1; }
+      100% { transform: translateX(4%)  translateY(2%) scale(1);   opacity: 0.65; }
+    }
+
+    /* ── Vignette ──────────────────────────────────────── */
+    .vignette {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse 110% 110% at 50% 50%, transparent 38%, rgba(7,19,11,0.65) 100%);
+    }
+
+    /* ── Ambient blobs ─────────────────────────────────── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(160px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .blob-1 { width: 700px; height: 700px; background: rgba(127,163,107,0.07); top: -280px; right: -240px; }
+    .blob-2 { width: 550px; height: 550px; background: rgba(45,90,61,0.05);   bottom: 18%; left: -220px; }
+    .blob-3 { width: 380px; height: 380px; background: rgba(127,163,107,0.04); bottom: -100px; right: 10%; }
+
+    /* ── NAV ───────────────────────────────────────────── */
+    .top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 40px;
+      background: rgba(7,19,11,0.84);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-brand {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 0.08em;
+    }
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-2);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--text); }
+
+    /* ── EXPLORER SECTION ──────────────────────────────── */
+    #explorer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 130px 24px 100px;
+      min-height: 100vh;
+    }
+
+    .section-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .section-title {
+      font-family: 'Cinzel', serif;
+      font-size: clamp(1.4rem, 4vw, 2.0rem);
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-align: center;
+      margin-bottom: 10px;
+      color: var(--text);
+    }
+    .section-sub {
+      color: var(--text-2);
+      text-align: center;
+      font-size: 0.9rem;
+      max-width: 480px;
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+
+    /* Legend */
+    .legend {
+      display: flex;
+      gap: 22px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 52px;
+    }
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      color: var(--text-2);
+    }
+    .leg-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    /* SVG wrapper */
+    .inf-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 860px;
+    }
+
+    #inf-svg {
+      width: 100%;
+      height: auto;
+      overflow: visible;
+      display: block;
+    }
+
+    /* Tooltip */
+    #tip-box {
+      position: absolute;
+      background: rgba(13,30,20,0.95);
+      border: 1px solid var(--border-hi);
+      border-radius: 9px;
+      padding: 9px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      white-space: nowrap;
+      z-index: 20;
+      transform: translate(-50%, calc(-100% - 16px));
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(127,163,107,0.08);
+      backdrop-filter: blur(10px);
+    }
+    #tip-box.show { opacity: 1; }
+
+    /* ── SVG NODE STYLES ───────────────────────────────── */
+    .node-g { cursor: pointer; }
+    .node-g .n-ring  { transition: stroke-opacity 0.22s ease, stroke-width 0.22s ease; }
+    .node-g .n-glow  { transition: opacity 0.22s ease; }
+    .node-g .n-num   { transition: fill-opacity 0.22s ease; font-family: 'Inter', system-ui, sans-serif; }
+    .node-g:hover .n-ring  { stroke-opacity: 1 !important; stroke-width: 2.5 !important; }
+    .node-g:hover .n-glow  { opacity: 0.16 !important; }
+    .node-g:hover .n-num   { fill-opacity: 1 !important; }
+
+    /* ── HINT BELOW SVG ────────────────────────────────── */
+    .click-hint {
+      margin-top: 32px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .click-hint::before,
+    .click-hint::after {
+      content: '';
+      width: 28px;
+      height: 1px;
+      background: var(--text-3);
+      opacity: 0.5;
+    }
+
+    @media (max-width: 600px) {
+      .top-nav { padding: 12px 20px; }
+      .legend { gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Atmosphere layers -->
+  <canvas id="spores-canvas"></canvas>
+  <div class="fog-layer"></div>
+  <div class="vignette"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <nav class="top-nav">
+    <a href="index.html" class="nav-brand">Truitt Baker</a>
+    <a href="index.html" class="nav-link">← Home</a>
+  </nav>
+
+  <section id="explorer">
+    <div class="section-eyebrow">Projects &amp; Experiences</div>
+    <h2 class="section-title">Pick a node to explore</h2>
+    <p class="section-sub">Twelve projects placed along an infinity symbol — because once you start building, you never really stop. Each node is a thread that led somewhere unexpected.</p>
+
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--physics)"></div>Physics &amp; Math</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--finance)"></div>Finance</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--software)"></div>Software &amp; STEM</div>
+    </div>
+
+    <div class="inf-wrap">
+      <div id="tip-box"></div>
+      <svg id="inf-svg" viewBox="0 0 860 340" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="pglow" x="-10%" y="-80%" width="120%" height="260%">
+            <feGaussianBlur stdDeviation="7" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <filter id="nglow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="5" result="b"/>
+            <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Base vine path -->
+        <path id="p-base" fill="none" stroke="rgba(127,163,107,0.14)" stroke-width="1.5"/>
+        <!-- Animated glowing vine -->
+        <path id="p-flow" fill="none" stroke="#7FA36B" stroke-width="2.5" stroke-linecap="round" filter="url(#pglow)" opacity="0.75"/>
+        <!-- Nodes group -->
+        <g id="nodes-g"></g>
+      </svg>
+    </div>
+
+    <p class="click-hint">Click any node to open the project</p>
+  </section>
+
+  <script>
+  // ── Floating spores ───────────────────────────────────────────────
+  (function() {
+    const canvas = document.getElementById('spores-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener('resize', resize);
+    function rand(a, b) { return a + Math.random() * (b - a); }
+    const particles = Array.from({ length: 50 }, () => ({
+      x: rand(0, window.innerWidth), y: rand(0, window.innerHeight),
+      r: rand(0.4, 2.0), vx: rand(-0.12, 0.12), vy: rand(-0.38, -0.06),
+      a: rand(0.04, 0.18), va: rand(-0.002, 0.002),
+    }));
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        p.a = Math.max(0.02, Math.min(0.20, p.a + p.va));
+        if (p.y < -8)  { p.y = H + 8; p.x = rand(0, W); }
+        if (p.x < -8)  p.x = W + 8;
+        if (p.x > W+8) p.x = -8;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(127,163,107,${p.a})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // ── Projects data ─────────────────────────────────────────────────
+  const PROJECTS = [
+    // Physics & Math
+    { id: 'pendulum',     cat: 'physics',  title: 'Double Pendulum Simulations',         url: 'project-pendulum.html'     },
+    { id: 'mandelbrot',   cat: 'physics',  title: 'Mandelbrot Set Explorer',              url: 'project-mandelbrot.html'   },
+    { id: 'lensing',      cat: 'physics',  title: '2D Gravitational Lensing',             url: 'project-lensing.html'      },
+    { id: 'blackhole',    cat: 'physics',  title: 'Black Hole GPU Ray Tracing',           url: 'project-blackhole.html'    },
+    // Finance
+    { id: 'bot',          cat: 'finance',  title: 'Options Trading Bot',                  url: 'project-bot.html'          },
+    { id: 'backtesting',  cat: 'finance',  title: 'Options Trading Backtesting',          url: 'project-backtesting.html'  },
+    { id: 'srbands',      cat: 'finance',  title: 'S&R Band Indicator (TradingView)',      url: 'project-srbands.html'      },
+    { id: 'blackscholes', cat: 'finance',  title: 'Black-Scholes Option Pricing',         url: 'project-blackscholes.html' },
+    // Software & STEM
+    { id: 'johnnie',      cat: 'software', title: 'Johnnie Studio Internship',            url: 'project-johnnie.html'      },
+    { id: 'studysite',    cat: 'software', title: 'SAT Study Skills Website',             url: 'project-studysite.html'    },
+    { id: 'hangman',      cat: 'software', title: 'Hangman Game & Solver GUI',            url: 'project-hangman.html'      },
+    { id: 'pokerbot',     cat: 'software', title: 'Poker Bot',                            url: 'project-pokerbot.html'     },
+  ];
+
+  const CAT_COLOR = {
+    physics:  '#6BBF8A',
+    finance:  '#D4A843',
+    software: '#8BA8A0',
+  };
+
+  // Lemniscate (∞) math
+  const W = 860, H = 340, CX = W/2, CY = H/2, A = 268, YS = 0.76;
+
+  function lem(t) {
+    const s = Math.sin(t), c = Math.cos(t), d = 1 + s*s;
+    return { x: CX + A*c/d, y: CY + A*s*c/d * YS };
+  }
+
+  function buildPath(steps) {
+    let d = '';
+    for (let i = 0; i <= steps; i++) {
+      const { x, y } = lem((i/steps)*Math.PI*2);
+      d += (i===0 ? 'M':'L') + x.toFixed(1)+','+y.toFixed(1)+' ';
+    }
+    return d + 'Z';
+  }
+
+  const pathD = buildPath(600);
+  document.getElementById('p-base').setAttribute('d', pathD);
+  const pFlow = document.getElementById('p-flow');
+  pFlow.setAttribute('d', pathD);
+
+  // Animated flowing glow
+  const PL = 2200, DASH = 240;
+  pFlow.style.strokeDasharray = DASH + ' ' + (PL - DASH);
+
+  const sEl = document.createElement('style');
+  sEl.textContent = `
+    @keyframes flow { 0%{stroke-dashoffset:${PL+DASH}} 100%{stroke-dashoffset:0} }
+    #p-flow { animation: flow 6.5s linear infinite; }
+    @keyframes pulsate {
+      0%,100% { r: 23; opacity: .40; }
+      50%      { r: 32; opacity: 0; }
+    }
+    .pr { animation: pulsate 2.4s ease-out infinite; }
+  `;
+  document.head.appendChild(sEl);
+
+  // Distribute 12 nodes evenly, offset to avoid crossing at π/2 and 3π/2
+  const T_OFF = Math.PI / PROJECTS.length;
+  const nodePos = PROJECTS.map((_, i) => {
+    const t = T_OFF + (i / PROJECTS.length) * Math.PI * 2;
+    return { t, ...lem(t) };
+  });
+
+  // Render nodes
+  const nodesG = document.getElementById('nodes-g');
+
+  nodePos.forEach((pos, i) => {
+    const p   = PROJECTS[i];
+    const col = CAT_COLOR[p.cat];
+    const g   = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.classList.add('node-g');
+    g.dataset.i = i;
+
+    // Pulsate ring
+    const pr = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    pr.setAttribute('cx', pos.x); pr.setAttribute('cy', pos.y);
+    pr.setAttribute('r', '23'); pr.setAttribute('fill','none');
+    pr.setAttribute('stroke', col); pr.setAttribute('stroke-width','1');
+    pr.setAttribute('opacity','0');
+    pr.classList.add('pr');
+    pr.style.animationDelay = (i * 0.18) + 's';
+    g.appendChild(pr);
+
+    // Category-color glow bg
+    const gb = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    gb.setAttribute('cx', pos.x); gb.setAttribute('cy', pos.y);
+    gb.setAttribute('r', '23'); gb.setAttribute('fill', col);
+    gb.setAttribute('opacity','0'); gb.classList.add('n-glow');
+    g.appendChild(gb);
+
+    // Dark forest fill
+    const fill = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    fill.setAttribute('cx', pos.x); fill.setAttribute('cy', pos.y);
+    fill.setAttribute('r', '18'); fill.setAttribute('fill','#0D1E14');
+    g.appendChild(fill);
+
+    // Outer ring (moss stone)
+    const ring = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    ring.setAttribute('cx', pos.x); ring.setAttribute('cy', pos.y);
+    ring.setAttribute('r', '18'); ring.setAttribute('fill','none');
+    ring.setAttribute('stroke', col); ring.setAttribute('stroke-width','1.6');
+    ring.setAttribute('stroke-opacity','0.55');
+    ring.classList.add('n-ring');
+    g.appendChild(ring);
+
+    // Inner accent ring
+    const inner = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    inner.setAttribute('cx', pos.x); inner.setAttribute('cy', pos.y);
+    inner.setAttribute('r', '13'); inner.setAttribute('fill','none');
+    inner.setAttribute('stroke', col); inner.setAttribute('stroke-width','0.7');
+    inner.setAttribute('stroke-opacity','0.28');
+    g.appendChild(inner);
+
+    // Number label
+    const num = document.createElementNS('http://www.w3.org/2000/svg','text');
+    num.setAttribute('x', pos.x); num.setAttribute('y', pos.y+4.5);
+    num.setAttribute('text-anchor','middle');
+    num.setAttribute('font-size','10'); num.setAttribute('font-weight','600');
+    num.setAttribute('fill', col); num.setAttribute('fill-opacity','0.60');
+    num.classList.add('n-num');
+    num.textContent = String(i+1).padStart(2,'0');
+    g.appendChild(num);
+
+    // Hit area
+    const hit = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    hit.setAttribute('cx', pos.x); hit.setAttribute('cy', pos.y);
+    hit.setAttribute('r','28'); hit.setAttribute('fill','transparent');
+    g.appendChild(hit);
+
+    g.addEventListener('mouseenter', () => showTip(i, pos.x, pos.y));
+    g.addEventListener('mouseleave', hideTip);
+    g.addEventListener('click', () => { window.location.href = p.url; });
+
+    nodesG.appendChild(g);
+  });
+
+  // Tooltip
+  const tipBox = document.getElementById('tip-box');
+
+  function svgToDom(sx, sy) {
+    const svg = document.getElementById('inf-svg');
+    const pt  = svg.createSVGPoint();
+    pt.x = sx; pt.y = sy;
+    return pt.matrixTransform(svg.getScreenCTM());
+  }
+
+  function showTip(i, sx, sy) {
+    const dom  = svgToDom(sx, sy);
+    const wrap = document.querySelector('.inf-wrap').getBoundingClientRect();
+    tipBox.textContent = PROJECTS[i].title;
+    tipBox.style.left  = (dom.x - wrap.left) + 'px';
+    tipBox.style.top   = (dom.y - wrap.top)  + 'px';
+    tipBox.classList.add('show');
+  }
+
+  function hideTip() { tipBox.classList.remove('show'); }
+  </script>
+</body>
+</html>

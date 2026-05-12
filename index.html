@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Leave a Legacy — Truitt Baker · PostAP CS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cinzel:wght@400;600;700&family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:           #07130B;
+      --surface:      #0D1E14;
+      --surface-card: rgba(22,51,34,0.75);
+      --border:       rgba(127,163,107,0.15);
+      --border-hi:    rgba(127,163,107,0.32);
+      --text:         #D7E2D3;
+      --text-2:       #8B9B8F;
+      --text-3:       #4A6B55;
+      --accent:       #7FA36B;
+      --wood-light:   #A8C896;
+      --physics:      #6BBF8A;
+      --finance:      #D4A843;
+      --software:     #8BA8A0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 998;
+      pointer-events: none;
+      opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    #spores-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ── NAV ─────────────────────────────────────────── */
+    .top-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 52px;
+      transition: background 0.4s ease, border-color 0.4s ease;
+      border-bottom: 1px solid transparent;
+    }
+    .top-nav.scrolled {
+      background: rgba(7,19,11,0.88);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border-bottom-color: var(--border);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      letter-spacing: 0.06em;
+    }
+    .nav-links {
+      display: flex;
+      gap: 38px;
+      align-items: center;
+    }
+    .nav-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.78);
+      text-decoration: none;
+      letter-spacing: 0.03em;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: white; }
+
+    /* ── HERO ─────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 660px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 52px 68px;
+      overflow: hidden;
+    }
+
+    .hero-photo {
+      position: absolute;
+      inset: 0;
+      background:
+        url('https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80') center 38% / cover no-repeat,
+        linear-gradient(160deg, #0A2414 0%, #122B1A 40%, #071A0D 100%);
+      z-index: 0;
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background:
+        linear-gradient(to top, rgba(7,19,11,0.96) 0%, rgba(7,19,11,0.62) 28%, rgba(7,19,11,0.18) 58%, transparent 80%),
+        linear-gradient(to bottom, rgba(7,19,11,0.42) 0%, transparent 16%);
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.52);
+      margin-bottom: 14px;
+      font-weight: 500;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', 'Arial Black', impact, sans-serif;
+      font-size: clamp(5.5rem, 16vw, 13rem);
+      line-height: 0.88;
+      color: white;
+      margin-bottom: 36px;
+      letter-spacing: 0.01em;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+    .h-stat {
+      padding: 0 36px 0 0;
+      margin-right: 36px;
+      border-right: 1px solid rgba(255,255,255,0.13);
+    }
+    .h-stat:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+    .h-stat-val {
+      display: block;
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.025em;
+      line-height: 1;
+    }
+    .h-stat-lbl {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.42);
+      margin-top: 5px;
+    }
+
+    /* Bottom-right corner counter (like the "1/11" in the reference) */
+    .hero-corner {
+      position: absolute;
+      bottom: 68px;
+      right: 52px;
+      z-index: 2;
+      text-align: right;
+      line-height: 1;
+    }
+    .hero-corner-big {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 3.4rem;
+      color: white;
+    }
+    .hero-corner-slash {
+      font-size: 1.6rem;
+      color: rgba(255,255,255,0.30);
+    }
+    .hero-corner-lbl {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+      margin-top: 4px;
+    }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: absolute;
+      bottom: 68px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.32);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      animation: bob 2.4s ease-in-out infinite;
+    }
+    .scroll-hint::after {
+      content: '';
+      width: 1px;
+      height: 36px;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.32), transparent);
+    }
+    @keyframes bob {
+      0%,100% { transform: translateX(-50%) translateY(0); }
+      50%      { transform: translateX(-50%) translateY(8px); }
+    }
+
+    /* ── SHARED ──────────────────────────────────────── */
+    .section-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 100px 28px;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 58px;
+    }
+    .section-eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      color: var(--text);
+      letter-spacing: 0.04em;
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      color: var(--text-2);
+      font-size: 0.95rem;
+      max-width: 520px;
+      margin: 0 auto;
+      line-height: 1.78;
+    }
+
+    hr.divider {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--border), transparent);
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ── INFINITY MAP ─────────────────────────────────── */
+    #map {
+      background:
+        linear-gradient(to bottom, rgba(13,30,20,0.35) 0%, transparent 20%),
+        linear-gradient(to top,    rgba(13,30,20,0.35) 0%, transparent 20%);
+    }
+
+    .legend {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 38px;
+    }
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11px;
+      color: var(--text-2);
+    }
+    .leg-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+    .inf-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    #inf-svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+    #tip-box {
+      position: absolute;
+      background: rgba(13,30,20,0.96);
+      border: 1px solid var(--border-hi);
+      border-radius: 9px;
+      padding: 9px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      white-space: nowrap;
+      z-index: 20;
+      transform: translate(-50%, calc(-100% - 16px));
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+      backdrop-filter: blur(10px);
+    }
+    #tip-box.show { opacity: 1; }
+
+    .node-g { cursor: pointer; }
+    .node-g .n-ring { transition: stroke-opacity .22s, stroke-width .22s; }
+    .node-g .n-glow { transition: opacity .22s; }
+    .node-g .n-num  { transition: fill-opacity .22s; font-family: 'Inter', sans-serif; }
+    .node-g:hover .n-ring { stroke-opacity: 1 !important; stroke-width: 2.5 !important; }
+    .node-g:hover .n-glow { opacity: 0.16 !important; }
+    .node-g:hover .n-num  { fill-opacity: 1 !important; }
+
+    .click-hint {
+      text-align: center;
+      margin-top: 22px;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .click-hint::before, .click-hint::after {
+      content: '';
+      width: 28px; height: 1px;
+      background: var(--text-3); opacity: 0.5;
+    }
+
+    /* ── PROJECT CARDS ───────────────────────────────── */
+    .projects-section-header {
+      text-align: center;
+      margin-top: 80px;
+      margin-bottom: 36px;
+    }
+    .projects-section-header .section-eyebrow { margin-bottom: 6px; }
+    .projects-section-header h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.4rem);
+      color: var(--text);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 16px;
+    }
+
+    .proj-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px 26px 52px;
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 4px 22px rgba(0,0,0,0.42);
+      transition: border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      position: relative;
+    }
+    .proj-card:hover {
+      border-color: var(--border-hi);
+      transform: translateY(-3px);
+      box-shadow: 0 14px 38px rgba(0,0,0,0.55), 0 0 22px rgba(127,163,107,0.06);
+    }
+    .proj-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .proj-badge {
+      font-size: 9.5px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1px solid;
+    }
+    .badge-physics  { color: var(--physics);  border-color: rgba(107,191,138,0.30); background: rgba(107,191,138,0.08); }
+    .badge-finance  { color: var(--finance);  border-color: rgba(212,168,67,0.30);  background: rgba(212,168,67,0.08);  }
+    .badge-software { color: var(--software); border-color: rgba(139,168,160,0.30); background: rgba(139,168,160,0.08); }
+
+    .proj-num {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      color: var(--text-3);
+      font-weight: 600;
+    }
+    .proj-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .proj-desc {
+      font-size: 0.83rem;
+      color: var(--text-2);
+      line-height: 1.74;
+      margin-bottom: 16px;
+    }
+    .proj-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .proj-tag {
+      font-size: 10px;
+      color: var(--text-3);
+      background: rgba(127,163,107,0.06);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 3px 8px;
+    }
+    .proj-arrow {
+      position: absolute;
+      bottom: 22px; right: 24px;
+      font-size: 15px;
+      color: var(--text-3);
+      transition: color 0.2s, transform 0.2s;
+    }
+    .proj-card:hover .proj-arrow { color: var(--accent); transform: translate(2px,-2px); }
+
+    /* ── TIPS ─────────────────────────────────────────── */
+    #tips { background: linear-gradient(to bottom, rgba(13,30,20,0.25), transparent, rgba(13,30,20,0.25)); }
+    .tips-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 14px;
+    }
+    .tip-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 24px;
+      backdrop-filter: blur(12px);
+      box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 4px 20px rgba(0,0,0,0.42);
+      transition: border-color 0.25s, transform 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .tip-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--accent);
+      opacity: 0.45;
+    }
+    .tip-card:hover { border-color: var(--border-hi); transform: translateY(-2px); }
+    .tip-num { font-size: 10px; letter-spacing: 0.20em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 9px; }
+    .tip-h   { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .tip-p   { font-size: 0.84rem; color: var(--text-2); line-height: 1.72; }
+
+    /* ── LETTER ───────────────────────────────────────── */
+    .letter-body {
+      max-width: 660px;
+      margin: 0 auto;
+    }
+    .letter-body p { color: var(--text-2); line-height: 1.92; margin-bottom: 22px; font-size: 0.97rem; }
+    .callout {
+      background: rgba(22,51,34,0.55);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 12px 12px 0;
+      padding: 22px 26px;
+      margin: 34px 0;
+      backdrop-filter: blur(8px);
+      box-shadow: inset 0 1px 0 rgba(127,163,107,0.06), 0 4px 18px rgba(0,0,0,0.35);
+    }
+    .callout-lbl {
+      font-size: 10px;
+      letter-spacing: 0.20em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .callout p { color: var(--text) !important; margin: 0 !important; font-size: 0.91rem; }
+    .sig { font-size: 0.84rem; color: var(--text-3) !important; font-style: italic; margin-top: 30px !important; }
+
+    /* ── REVEAL ───────────────────────────────────────── */
+    .rev { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
+    .rev.in { opacity: 1; transform: none; }
+
+    /* ── FOOTER ───────────────────────────────────────── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 40px 24px 58px;
+      text-align: center;
+      color: var(--text-3);
+      font-size: 11px;
+      letter-spacing: 0.10em;
+    }
+
+    @media (max-width: 700px) {
+      #hero { padding: 0 24px 52px; }
+      .top-nav { padding: 14px 24px; }
+      .hero-title { font-size: 4.2rem; }
+      .nav-links { gap: 22px; }
+      .hero-corner { right: 24px; }
+      .section-wrap { padding: 72px 20px; }
+    }
+    @media (max-width: 480px) {
+      .hero-stats { gap: 0; }
+      .h-stat { padding-right: 20px; margin-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="spores-canvas"></canvas>
+
+  <!-- NAV -->
+  <nav class="top-nav" id="main-nav">
+    <a href="#" class="nav-brand">🌿 Truitt Baker</a>
+    <div class="nav-links">
+      <a href="#map" class="nav-link">Projects</a>
+      <a href="#tips" class="nav-link">Survival Guide</a>
+      <a href="#letter" class="nav-link">Letter</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ─────────────────────────────────────────────────────── -->
+  <section id="hero">
+    <div class="hero-photo"></div>
+    <div class="hero-overlay"></div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">PostAP Computer Science · 2024–2025</div>
+      <h1 class="hero-title">Leave a<br>Legacy.</h1>
+      <div class="hero-stats">
+        <div class="h-stat">
+          <span class="h-stat-val">12</span>
+          <div class="h-stat-lbl">Projects Built</div>
+        </div>
+        <div class="h-stat">
+          <span class="h-stat-val">238</span>
+          <div class="h-stat-lbl">Hours Invested</div>
+        </div>
+        <div class="h-stat">
+          <span class="h-stat-val">3</span>
+          <div class="h-stat-lbl">Domains</div>
+        </div>
+        <div class="h-stat">
+          <span class="h-stat-val">∞</span>
+          <div class="h-stat-lbl">Still Going</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-corner">
+      <div class="hero-corner-big">12<span class="hero-corner-slash"> /12</span></div>
+      <div class="hero-corner-lbl">Projects Complete</div>
+    </div>
+
+    <div class="scroll-hint">Scroll</div>
+  </section>
+
+  <!-- ── INFINITY MAP + ALL PROJECTS ──────────────────────────────── -->
+  <section id="map">
+    <div class="section-wrap">
+      <div class="section-header">
+        <div class="section-eyebrow rev">The Work</div>
+        <h2 class="section-title rev">The ∞ Path</h2>
+        <p class="section-sub rev">Twelve projects placed along an infinity symbol — because once you start building, you never really stop. Each node is a thread that led somewhere unexpected.</p>
+      </div>
+
+      <div class="legend rev">
+        <div class="leg"><div class="leg-dot" style="background:var(--physics)"></div>Physics &amp; Math</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--finance)"></div>Finance</div>
+        <div class="leg"><div class="leg-dot" style="background:var(--software)"></div>Software &amp; STEM</div>
+      </div>
+
+      <div class="inf-wrap rev">
+        <div id="tip-box"></div>
+        <svg id="inf-svg" viewBox="0 0 860 340" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="pglow" x="-10%" y="-80%" width="120%" height="260%">
+              <feGaussianBlur stdDeviation="7" result="b"/>
+              <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <path id="p-base" fill="none" stroke="rgba(127,163,107,0.14)" stroke-width="1.5"/>
+          <path id="p-flow" fill="none" stroke="#7FA36B" stroke-width="2.5" stroke-linecap="round" filter="url(#pglow)" opacity="0.75"/>
+          <g id="nodes-g"></g>
+        </svg>
+      </div>
+      <p class="click-hint rev">Click any node to open the project</p>
+
+      <!-- All 12 project cards -->
+      <div class="projects-section-header rev">
+        <div class="section-eyebrow">All Projects</div>
+        <h3>Everything I Built</h3>
+      </div>
+      <div class="projects-grid" id="proj-grid"></div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── TIPS / SURVIVAL GUIDE ─────────────────────────────────────── -->
+  <section id="tips">
+    <div class="section-wrap">
+      <div class="section-header">
+        <div class="section-eyebrow rev">Advice</div>
+        <h2 class="section-title rev">What I Wish I'd Known</h2>
+        <p class="section-sub rev">Honest survival tips for the next group of PostAP students — the things nobody tells you before you sign up.</p>
+      </div>
+      <div class="tips-grid" id="tips-g"></div>
+    </div>
+  </section>
+
+  <hr class="divider">
+
+  <!-- ── LETTER ─────────────────────────────────────────────────────── -->
+  <section id="letter">
+    <div class="section-wrap">
+      <div class="section-header">
+        <div class="section-eyebrow rev">To the Next Group</div>
+        <h2 class="section-title rev">A Note From Me</h2>
+      </div>
+      <div class="letter-body">
+        <p class="rev">PostAP is unlike any class you've taken. There are no rubrics, no tests, no safety net — just you, a problem, and whatever drive you can muster to figure it out. That's terrifying and incredible at the same time.</p>
+        <p class="rev">The best thing I did was pick projects that genuinely interested me. When I hit walls — and I hit a lot of them, like teaching myself derivatives while still in Pre-Calc — curiosity kept me going far more effectively than any grade ever could have.</p>
+        <p class="rev">Skills compound here in a way they don't in normal classes. My trading bot got sharper because I understood numerical methods from the pendulum project. My black hole simulation became possible because I'd already built the 2D lensing version first. Every project you finish makes the next one more possible.</p>
+        <p class="rev">One more thing: let the physics pull you somewhere unexpected. I started with a simple pendulum and ended up GPU-rendering relativistic black holes on the school network. Curiosity compounds just like skills do. You probably won't get that far your first semester — but you might surprise yourself.</p>
+        <div class="callout rev">
+          <div class="callout-lbl">The honest summary</div>
+          <p>You won't feel qualified. Build anyway. Ship it broken, then fix it. That cycle — repeated across twelve projects and 238 hours — is what PostAP actually taught me.</p>
+        </div>
+        <p class="sig rev">— Truitt Baker, PostAP CS 2024–2025</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Truitt Baker &nbsp;·&nbsp; PostAP Computer Science &nbsp;·&nbsp; 2024–2025</p>
+  </footer>
+
+  <script>
+  // ── Floating spores ───────────────────────────────────────────────
+  (function() {
+    const canvas = document.getElementById('spores-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize();
+    window.addEventListener('resize', resize);
+    function rand(a, b) { return a + Math.random() * (b - a); }
+    const particles = Array.from({ length: 60 }, () => ({
+      x:  rand(0, window.innerWidth), y: rand(0, window.innerHeight),
+      r:  rand(0.4, 2.0), vx: rand(-0.12, 0.12), vy: rand(-0.38, -0.06),
+      a:  rand(0.04, 0.18), va: rand(-0.002, 0.002),
+    }));
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        p.a = Math.max(0.02, Math.min(0.20, p.a + p.va));
+        if (p.y < -8)  { p.y = H + 8; p.x = rand(0, W); }
+        if (p.x < -8)  p.x = W + 8;
+        if (p.x > W+8) p.x = -8;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(127,163,107,${p.a})`;
+        ctx.fill();
+      });
+      requestAnimationFrame(draw);
+    }
+    draw();
+  })();
+
+  // ── Nav glass on scroll ───────────────────────────────────────────
+  const nav = document.getElementById('main-nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  }, { passive: true });
+
+  // ── Projects data ─────────────────────────────────────────────────
+  const PROJECTS = [
+    {
+      id: 'pendulum', cat: 'physics', num: '01',
+      title: 'Double Pendulum Simulations',
+      desc: 'Numerically solved chaotic double-pendulum ODEs using Euler, RK2, and RK4 solvers. Tiny initial-condition differences explode into completely different trajectories — a hands-on intro to chaos theory.',
+      tags: ['Python', 'ODE Solvers', 'Chaos Theory', 'NumPy'],
+      url: 'project-pendulum.html',
+    },
+    {
+      id: 'mandelbrot', cat: 'physics', num: '02',
+      title: 'Mandelbrot Set Explorer',
+      desc: 'An interactive fractal explorer built with the escape-time algorithm. Pan, zoom, and colorize iteration bands to reveal infinite self-similarity in the complex plane.',
+      tags: ['Python', 'Fractal Math', 'Complex Numbers', 'Matplotlib'],
+      url: 'project-mandelbrot.html',
+    },
+    {
+      id: 'lensing', cat: 'physics', num: '03',
+      title: '2D Gravitational Lensing',
+      desc: 'Simulated how massive objects bend light in 2D by ray-tracing photon paths through curved spacetime — a direct stepping stone toward full 3D black-hole rendering.',
+      tags: ['Python', 'General Relativity', 'Ray Tracing', 'NumPy'],
+      url: 'project-lensing.html',
+    },
+    {
+      id: 'blackhole', cat: 'physics', num: '04',
+      title: 'Black Hole GPU Ray Tracer',
+      desc: 'Full 3D relativistic ray tracer running on GPU shaders. Simulates photon orbits around a Schwarzschild black hole — accretion disk, gravitational lensing, and Doppler redshift — rendering in real time on the school network.',
+      tags: ['GLSL', 'GPU Shaders', 'Schwarzschild Metric', 'WebGL'],
+      url: 'project-blackhole.html',
+    },
+    {
+      id: 'bot', cat: 'finance', num: '05',
+      title: 'Options Trading Bot',
+      desc: 'An automated options trading system integrated with a live brokerage API. Scans for setups, sizes positions based on risk parameters, and executes orders without human input.',
+      tags: ['Python', 'Brokerage API', 'Options Strategy', 'Automation'],
+      url: 'project-bot.html',
+    },
+    {
+      id: 'backtesting', cat: 'finance', num: '06',
+      title: 'Options Trading Backtester',
+      desc: 'Backtested trading strategies across 122,000+ rows of historical options data. Measured P&L, Sharpe ratio, and max drawdown across dozens of parameter combinations.',
+      tags: ['Python', 'Pandas', 'Statistics', 'Data Analysis'],
+      url: 'project-backtesting.html',
+    },
+    {
+      id: 'srbands', cat: 'finance', num: '07',
+      title: 'S&R Band Indicator',
+      desc: 'A custom technical indicator built in Pine Script and published to TradingView. Dynamically detects support and resistance levels using price-action band logic.',
+      tags: ['Pine Script', 'TradingView', 'Technical Analysis'],
+      url: 'project-srbands.html',
+    },
+    {
+      id: 'blackscholes', cat: 'finance', num: '08',
+      title: 'Black-Scholes Option Pricing',
+      desc: 'Implemented the Black-Scholes formula to price European options and compute the Greeks (delta, gamma, theta, vega). Includes a Newton-Raphson implied-volatility solver.',
+      tags: ['Python', 'Financial Math', 'Greeks', 'Implied Volatility'],
+      url: 'project-blackscholes.html',
+    },
+    {
+      id: 'johnnie', cat: 'software', num: '09',
+      title: 'Johnnie Studio Internship',
+      desc: 'Real-world full-stack development internship at Johnnie Studio. Shipped production features on a live platform alongside a professional engineering team.',
+      tags: ['Full-Stack', 'Internship', 'Production Code', 'Team Dev'],
+      url: 'project-johnnie.html',
+    },
+    {
+      id: 'studysite', cat: 'software', num: '10',
+      title: 'SAT Study Skills Website',
+      desc: 'Built a comprehensive study-skills resource for SAT prep, covering strategy, time management, and subject-specific techniques. Designed for students who want a structured self-study system.',
+      tags: ['HTML/CSS/JS', 'UX Design', 'Education', 'Web Dev'],
+      url: 'project-studysite.html',
+    },
+    {
+      id: 'hangman', cat: 'software', num: '11',
+      title: 'Hangman Game & Solver GUI',
+      desc: 'A GUI-based hangman game paired with an algorithmic solver that uses letter-frequency analysis and word-list elimination to optimally guess any word in the English dictionary.',
+      tags: ['Python', 'Tkinter', 'Algorithm Design', 'GUI'],
+      url: 'project-hangman.html',
+    },
+    {
+      id: 'pokerbot', cat: 'software', num: '12',
+      title: 'Poker Bot',
+      desc: 'A poker decision engine built on probability calculations and expected-value maximization. Computes pot odds, hand equity, and recommends optimal actions in real time.',
+      tags: ['Python', 'Game Theory', 'Probability', 'EV Math'],
+      url: 'project-pokerbot.html',
+    },
+  ];
+
+  const CAT_COLOR = { physics: '#6BBF8A', finance: '#D4A843', software: '#8BA8A0' };
+  const CAT_LABEL = { physics: 'Physics & Math', finance: 'Finance', software: 'Software & STEM' };
+
+  // ── Build lemniscate (∞) path ─────────────────────────────────────
+  const VW = 860, VH = 340, CX = VW/2, CY = VH/2, A = 268, YS = 0.76;
+  function lem(t) {
+    const s = Math.sin(t), c = Math.cos(t), d = 1 + s*s;
+    return { x: CX + A*c/d, y: CY + A*s*c/d*YS };
+  }
+  function buildPath(steps) {
+    let d = '';
+    for (let i = 0; i <= steps; i++) {
+      const { x, y } = lem((i/steps) * Math.PI * 2);
+      d += (i===0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1) + ' ';
+    }
+    return d + 'Z';
+  }
+  const pathD = buildPath(600);
+  document.getElementById('p-base').setAttribute('d', pathD);
+  const pFlow = document.getElementById('p-flow');
+  pFlow.setAttribute('d', pathD);
+  const PL = 2200, DASH = 240;
+  pFlow.style.strokeDasharray = DASH + ' ' + (PL - DASH);
+
+  const animStyle = document.createElement('style');
+  animStyle.textContent = `
+    @keyframes flow { 0%{stroke-dashoffset:${PL+DASH}} 100%{stroke-dashoffset:0} }
+    #p-flow { animation: flow 6.5s linear infinite; }
+    @keyframes pulsate { 0%,100%{r:23;opacity:.40} 50%{r:32;opacity:0} }
+    .pr { animation: pulsate 2.4s ease-out infinite; }
+  `;
+  document.head.appendChild(animStyle);
+
+  // Distribute nodes evenly along the curve
+  const T_OFF = Math.PI / PROJECTS.length;
+  const nodePos = PROJECTS.map((_, i) => {
+    const t = T_OFF + (i / PROJECTS.length) * Math.PI * 2;
+    return { t, ...lem(t) };
+  });
+
+  const nodesG = document.getElementById('nodes-g');
+  nodePos.forEach((pos, i) => {
+    const p   = PROJECTS[i];
+    const col = CAT_COLOR[p.cat];
+    const g   = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.classList.add('node-g');
+
+    const mk = (tag, attrs) => {
+      const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+      Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
+      return el;
+    };
+
+    // Pulsate ring
+    const pr = mk('circle', { cx: pos.x, cy: pos.y, r: '23', fill: 'none', stroke: col, 'stroke-width': '1', opacity: '0' });
+    pr.classList.add('pr');
+    pr.style.animationDelay = (i * 0.18) + 's';
+    g.appendChild(pr);
+
+    g.appendChild(mk('circle', { cx: pos.x, cy: pos.y, r: '23', fill: col, opacity: '0', class: 'n-glow' }));
+    g.appendChild(mk('circle', { cx: pos.x, cy: pos.y, r: '18', fill: '#0D1E14' }));
+
+    const ring = mk('circle', { cx: pos.x, cy: pos.y, r: '18', fill: 'none', stroke: col, 'stroke-width': '1.6', 'stroke-opacity': '0.55' });
+    ring.classList.add('n-ring');
+    g.appendChild(ring);
+
+    g.appendChild(mk('circle', { cx: pos.x, cy: pos.y, r: '13', fill: 'none', stroke: col, 'stroke-width': '0.7', 'stroke-opacity': '0.28' }));
+
+    const num = mk('text', { x: pos.x, y: pos.y + 4.5, 'text-anchor': 'middle', 'font-size': '10', 'font-weight': '600', fill: col, 'fill-opacity': '0.60' });
+    num.classList.add('n-num');
+    num.textContent = p.num;
+    g.appendChild(num);
+
+    g.appendChild(mk('circle', { cx: pos.x, cy: pos.y, r: '28', fill: 'transparent' }));
+
+    g.addEventListener('mouseenter', () => showTip(i, pos.x, pos.y));
+    g.addEventListener('mouseleave', hideTip);
+    g.addEventListener('click', () => { window.location.href = p.url; });
+    nodesG.appendChild(g);
+  });
+
+  // Tooltip
+  const tipBox = document.getElementById('tip-box');
+  function svgToDom(sx, sy) {
+    const svg = document.getElementById('inf-svg');
+    const pt  = svg.createSVGPoint();
+    pt.x = sx; pt.y = sy;
+    return pt.matrixTransform(svg.getScreenCTM());
+  }
+  function showTip(i, sx, sy) {
+    const dom  = svgToDom(sx, sy);
+    const wrap = document.querySelector('.inf-wrap').getBoundingClientRect();
+    tipBox.textContent = PROJECTS[i].title;
+    tipBox.style.left  = (dom.x - wrap.left) + 'px';
+    tipBox.style.top   = (dom.y - wrap.top)  + 'px';
+    tipBox.classList.add('show');
+  }
+  function hideTip() { tipBox.classList.remove('show'); }
+
+  // ── Build project cards ───────────────────────────────────────────
+  const grid = document.getElementById('proj-grid');
+  PROJECTS.forEach(p => {
+    const a = document.createElement('a');
+    a.href = p.url;
+    a.className = 'proj-card rev';
+    a.innerHTML = `
+      <div class="proj-header">
+        <span class="proj-badge badge-${p.cat}">${CAT_LABEL[p.cat]}</span>
+        <span class="proj-num">${p.num}</span>
+      </div>
+      <div class="proj-title">${p.title}</div>
+      <p class="proj-desc">${p.desc}</p>
+      <div class="proj-tags">${p.tags.map(t => `<span class="proj-tag">${t}</span>`).join('')}</div>
+      <span class="proj-arrow">↗</span>
+    `;
+    grid.appendChild(a);
+  });
+
+  // ── Tips data ─────────────────────────────────────────────────────
+  const TIPS = [
+    { h: 'Start before you feel ready', p: "You won't understand everything before you begin. Start the project, hit a wall, then figure it out. That loop is the whole point." },
+    { h: 'Teach yourself relentlessly', p: "I learned derivatives while still in Pre-Calc because my project demanded it. Don't wait for school to catch up to your curiosity." },
+    { h: 'Connect your passions', p: "Trading interested me so I built tools for it. Physics fascinated me so I simulated it. The best projects come from genuine interest, not obligation." },
+    { h: 'Small wins compound', p: "The 2D lensing model was a stepping stone to GPU-accelerated black holes. Every project you finish powers the next one." },
+    { h: 'Document everything', p: "Analyzing 122,000 lines of backtesting data taught me: recording your process is half the work. Future-you will thank present-you." },
+    { h: 'Let curiosity lead', p: "One pendulum question led to three numerical methods, a chaos paper, and eventually relativistic physics. Follow the thread wherever it goes." },
+  ];
+  const tipsG = document.getElementById('tips-g');
+  TIPS.forEach((t, i) => {
+    const card = document.createElement('div');
+    card.className = 'tip-card rev';
+    card.innerHTML = `<div class="tip-num">Tip ${String(i+1).padStart(2,'0')}</div><div class="tip-h">${t.h}</div><p class="tip-p">${t.p}</p>`;
+    tipsG.appendChild(card);
+  });
+
+  // ── Scroll reveal ─────────────────────────────────────────────────
+  const ro = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.rev').forEach(el => ro.observe(el));
+  </script>
+</body>
+</html>

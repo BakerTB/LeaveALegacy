@@ -838,7 +838,7 @@
   document.head.appendChild(animStyle);
 
   // Distribute nodes evenly along the curve
-  const T_OFF = Math.PI / PROJECTS.length;
+  const T_OFF = Math.PI / PROJECTS.length + 0.22;
   const nodePos = PROJECTS.map((_, i) => {
     const t = T_OFF + (i / PROJECTS.length) * Math.PI * 2;
     return { t, ...lem(t) };

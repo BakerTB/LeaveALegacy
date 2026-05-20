@@ -89,6 +89,12 @@
     .back-btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 22px; border: 1.5px solid var(--wood); border-radius: 10px; color: var(--text-2); font-size: 13px; font-weight: 500; text-decoration: none; background: rgba(12,22,8,0.6); transition: all 0.2s; margin-top: 16px; }
     .back-btn:hover { border-color: var(--wood-hi); color: var(--text); }
 
+    .gif-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .gif-wrap { border-radius: 10px; overflow: hidden; border: 1px solid var(--border-hi); background: #fff; }
+    .gif-wrap img { width: 100%; display: block; }
+    .gif-label { font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-3); text-align: center; padding: 8px 0 4px; }
+    @media (max-width: 700px) { .gif-row { grid-template-columns: 1fr; } }
+
     .rev { opacity: 0; transform: translateY(20px); transition: opacity 0.55s ease, transform 0.55s ease; }
     .rev.in { opacity: 1; transform: none; }
   </style>
@@ -123,6 +129,27 @@
           <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Analyzed approximately <strong>18,000 lines of output data</strong> to compare the accuracy and stability of each method.</span></div>
           <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Mentored by <strong>Dr. Charles Lena</strong>, Episcopal School of Dallas.</span></div>
         </div>
+      </div>
+    </div>
+
+    <div class="card rev">
+      <div class="card-head"><span class="card-icon">🎬</span><span class="card-title">Simulation Demos — Euler vs RK4 vs RKN</span></div>
+      <div class="card-body">
+        <div class="gif-row">
+          <div>
+            <div class="gif-label">Euler</div>
+            <div class="gif-wrap"><img src="euler-pendulum.gif" alt="Double pendulum simulation using Euler method" loading="lazy" /></div>
+          </div>
+          <div>
+            <div class="gif-label">RK4</div>
+            <div class="gif-wrap"><img src="rk4-pendulum.gif" alt="Double pendulum simulation using RK4 method" loading="lazy" /></div>
+          </div>
+          <div>
+            <div class="gif-label">RKN</div>
+            <div class="gif-wrap"><img src="rkn-pendulum.gif" alt="Double pendulum simulation using RKN method" loading="lazy" /></div>
+          </div>
+        </div>Each clip is 10 seconds of the Pygame GUI after startup. Same initial conditions across all three integrators. They differ in speeds and accuracy because different methods are used to solve the differential equations.
+        <p style="font-size:0.78rem;color:var(--text-3);margin-top:12px;text-align:center"></p>
       </div>
     </div>
 

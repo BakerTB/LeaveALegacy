@@ -55,7 +55,7 @@
       pointer-events: none;
     }
 
-    /* ── NAV ─────────────────────────────────────────── */
+    /*  NAV  */
     .top-nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -99,7 +99,7 @@
     }
     .nav-link:hover { color: white; }
 
-    /* ── HERO ─────────────────────────────────────────── */
+    /*  HERO  */
     #hero {
       position: relative;
       height: 100vh;
@@ -233,7 +233,7 @@
       50%      { transform: translateX(-50%) translateY(8px); }
     }
 
-    /* ── SHARED ──────────────────────────────────────── */
+    /*  SHARED  */
     .section-wrap {
       position: relative;
       z-index: 1;
@@ -279,7 +279,7 @@
       z-index: 1;
     }
 
-    /* ── INFINITY MAP ─────────────────────────────────── */
+    /*  INFINITY MAP  */
     #map {
       background:
         linear-gradient(to bottom, rgba(13,30,20,0.35) 0%, transparent 20%),
@@ -360,7 +360,7 @@
       background: var(--text-3); opacity: 0.5;
     }
 
-    /* ── PROJECT CARDS ───────────────────────────────── */
+    /*  PROJECT CARDS  */
     .projects-section-header {
       text-align: center;
       margin-top: 80px;
@@ -460,7 +460,7 @@
     }
     .proj-card:hover .proj-arrow { color: var(--accent); transform: translate(2px,-2px); }
 
-    /* ── TIPS ─────────────────────────────────────────── */
+    /*  TIPS  */
     #tips { background: linear-gradient(to bottom, rgba(13,30,20,0.25), transparent, rgba(13,30,20,0.25)); }
     .tips-grid {
       display: grid;
@@ -491,7 +491,7 @@
     .tip-h   { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; color: var(--text); }
     .tip-p   { font-size: 0.84rem; color: var(--text-2); line-height: 1.72; }
 
-    /* ── LETTER ───────────────────────────────────────── */
+    /*  LETTER  */
     .letter-body {
       max-width: 660px;
       margin: 0 auto;
@@ -518,11 +518,11 @@
     .callout p { color: var(--text) !important; margin: 0 !important; font-size: 0.91rem; }
     .sig { font-size: 0.84rem; color: var(--text-3) !important; font-style: italic; margin-top: 30px !important; }
 
-    /* ── REVEAL ───────────────────────────────────────── */
+    /*  REVEAL  */
     .rev { opacity: 0; transform: translateY(24px); transition: opacity 0.65s ease, transform 0.65s ease; }
     .rev.in { opacity: 1; transform: none; }
 
-    /* ── FOOTER ───────────────────────────────────────── */
+    /*  FOOTER  */
     footer {
       position: relative;
       z-index: 1;
@@ -554,7 +554,7 @@
 
   <!-- NAV -->
   <nav class="top-nav" id="main-nav">
-    <a href="#" class="nav-brand">🌿 Truitt Baker</a>
+    <a href="#" class="nav-brand">Truitt Baker</a>
     <div class="nav-links">
       <a href="#map" class="nav-link">Projects</a>
       <a href="#tips" class="nav-link">Survival Guide</a>
@@ -562,7 +562,7 @@
     </div>
   </nav>
 
-  <!-- ── HERO ─────────────────────────────────────────────────────── -->
+  <!--  HERO  -->
   <section id="hero">
     <div class="hero-photo"></div>
     <div class="hero-overlay"></div>
@@ -585,7 +585,7 @@
     <div class="scroll-hint">Scroll</div>
   </section>
 
-  <!-- ── INFINITY MAP + ALL PROJECTS ──────────────────────────────── -->
+  <!--  INFINITY MAP + ALL PROJECTS  -->
   <section id="map">
     <div class="section-wrap">
       <div class="section-header">
@@ -627,7 +627,7 @@
 
   <hr class="divider">
 
-  <!-- ── TIPS / SURVIVAL GUIDE ─────────────────────────────────────── -->
+  <!--  TIPS / SURVIVAL GUIDE  -->
   <section id="tips">
     <div class="section-wrap">
       <div class="section-header">
@@ -641,7 +641,7 @@
 
   <hr class="divider">
 
-  <!-- ── LETTER ─────────────────────────────────────────────────────── -->
+  <!--  LETTER  -->
   <section id="letter">
     <div class="section-wrap">
       <div class="section-header">
@@ -651,9 +651,9 @@
       <div class="letter-body">
         <p class="rev">PostAP is unlike any class you have taken. There are no rubrics, no tests — it is just you, a problem, and whatever drive you can pull together to figure it out. That is the terrifying and incredible part of this class. This class will take you as far as your imagination will permit.</p>
         <p class="rev">The best thing I did was pick projects that genuinely interested me. When I hit walls, and I hit a lot of them, like teaching myself derivatives while still in Pre-Calc and post-graduate math to simulate black holes, curiosity kept me going way more effectively than any grade ever could have.</p>
-        <p class="rev">Skills compound here in a way they do not in normal classes. My trading bot got sharper because I understood numerical methods from the pendulum project. My black hole simulation became possible because I had already built the 2D lensing version first. Every project you finish makes the next one more possible. That is not a coincidence, that is the whole point of this class. And it all compounds because of genuine curiosity, not obligation.</p>
+        <p class="rev">Skills compound here in a way they do not in normal classes. My trading bot got sharper because I understood numerical methods from the pendulum project. My black hole simulation became possible because I had already built the 2D lensing version first. Every project you finish makes the next one more possible. That is not a coincidence, that is the whole point of this class.</p>
         <p class="rev">This class also opens real doors. My trading bot is actually profitable and something I plan to continue running and building into the future. I was offered an internship at a 300 million dollar hedge fund through work I did in this class. Investors have taken genuine interest in projects built in this room. These are not hypotheticals, they are things that happened because this class gives you the ability to explore. I did not realize how important this class was to me until I finally started seeing it slip away. I wish I had more time, because the greatest classes are the ones that keep you up until 4am, not for a grade, but because you are too engulfed in it to quit.</p>
-        <p class="rev">If I could talk to myself when I was first entering this class, I would tell him: let curiosity pull you in any direction you want to go. Do not build something you do not care about, because you will not grow that way. Have fun. This class is meant to be a unique experience that you walk away from as a better and more capable person.</p>
+        <p class="rev">If I could talk to myself when I was first entering this class, I would tell him: pick problems you actually want solved. Do not build something you do not care about, because you will not grow that way. Have fun. This class is meant to be a unique experience that you walk away from as a better and more capable person.</p>
         <p class="sig rev">— Truitt Baker, PostAP CS 2023–2026</p>
       </div>
     </div>
@@ -664,7 +664,7 @@
   </footer>
 
   <script>
-  // ── Floating spores ───────────────────────────────────────────────
+  //  Floating spores 
   (function() {
     const canvas = document.getElementById('spores-canvas');
     const ctx = canvas.getContext('2d');
@@ -696,46 +696,46 @@
     draw();
   })();
 
-  // ── Nav glass on scroll ───────────────────────────────────────────
+  //  Nav glass on scroll 
   const nav = document.getElementById('main-nav');
   window.addEventListener('scroll', () => {
     nav.classList.toggle('scrolled', window.scrollY > 60);
   }, { passive: true });
 
-  // ── Projects data ─────────────────────────────────────────────────
+  //  Projects data 
   const PROJECTS = [
     {
       id: 'pendulum', cat: 'physics', num: '01',
       title: 'Double Pendulum Simulations',
-      desc: 'Numerically solved chaotic double-pendulum ODEs using Euler, RK2, and RK4 solvers. Tiny initial-condition differences explode into completely different trajectories — a hands-on intro to chaos theory.',
+      desc: 'Three Pygame sims of the same chaotic double pendulum — Euler, RK4, and RKN. Logged ~18k CSV rows and compared integrators by how badly each one drifted on energy.',
       tags: ['Python', 'ODE Solvers', 'Chaos Theory', 'NumPy'],
       url: 'project-pendulum.html',
     },
     {
       id: 'mandelbrot', cat: 'physics', num: '02',
       title: 'Mandelbrot Set Explorer',
-      desc: 'An interactive fractal explorer built with the escape-time algorithm. Pan, zoom, and colorize iteration bands to reveal infinite self-similarity in the complex plane.',
+      desc: 'Interactive Mandelbrot explorer in Python — pan, zoom, and color by escape iteration. Built after getting stuck on the math and deciding to just render it.',
       tags: ['Python', 'Fractal Math', 'Complex Numbers', 'Matplotlib'],
       url: 'project-mandelbrot.html',
     },
     {
       id: 'lensing', cat: 'physics', num: '03',
       title: '2D Gravitational Lensing',
-      desc: 'Simulated how massive objects bend light in 2D by ray-tracing photon paths through curved spacetime — a direct stepping stone toward full 3D black-hole rendering.',
+      desc: '2D geodesic ray tracing around a Schwarzschild black hole — Euler vs RK4 on the same rays. Stepping stone before the full GPU version.',
       tags: ['Python', 'General Relativity', 'Ray Tracing', 'NumPy'],
       url: 'project-lensing.html',
     },
     {
       id: 'blackhole', cat: 'physics', num: '04',
       title: 'Black Hole GPU Ray Tracer',
-      desc: 'Full 3D relativistic ray tracer running on GPU shaders. Simulates photon orbits around a Schwarzschild black hole — accretion disk, gravitational lensing, and Doppler redshift — rendering in real time on the school network.',
+      desc: 'GLSL ray tracer for a Schwarzschild black hole — accretion disk, lensing, redshift. Runs in the browser on the school network; took the 2D lensing project and pushed it to 3D.',
       tags: ['GLSL', 'GPU Shaders', 'Schwarzschild Metric', 'WebGL'],
       url: 'project-blackhole.html',
     },
     {
       id: 'bot', cat: 'finance', num: '05',
       title: 'Options Trading Bot',
-      desc: 'An automated options trading system integrated with a live brokerage API. Scans for setups, sizes positions based on risk parameters, and executes orders without human input.',
+      desc: 'Live options bot on Alpaca — scans, sizes, and executes without me clicking. Profitable in paper and live; strategy stays off the public page.',
       tags: ['Python', 'Brokerage API', 'Options Strategy', 'Automation'],
       url: 'project-bot.html',
     },
@@ -749,7 +749,7 @@
     {
       id: 'srbands', cat: 'finance', num: '07',
       title: 'S&R Band Indicator',
-      desc: 'A custom technical indicator built in Pine Script and published to TradingView. Dynamically detects support and resistance levels using price-action band logic.',
+      desc: 'Pine Script bands from prior day high/low/close on TradingView. Started as a chart tool, later hooked into the options bot.',
       tags: ['Pine Script', 'TradingView', 'Technical Analysis'],
       url: 'project-srbands.html',
     },
@@ -770,7 +770,7 @@
     {
       id: 'studysite', cat: 'software', num: '10',
       title: 'SAT Study Skills Website',
-      desc: 'Built a comprehensive study-skills resource for SAT prep, covering strategy, time management, and subject-specific techniques. Designed for students who want a structured self-study system.',
+      desc: 'JavaScript SAT site with AI-generated questions and a per-question timer. Built it to see where I was burning minutes, not just whether answers were right.',
       tags: ['HTML/CSS/JS', 'UX Design', 'Education', 'Web Dev'],
       url: 'project-studysite.html',
     },
@@ -807,7 +807,7 @@
   const CAT_COLOR = { physics: '#6BBF8A', finance: '#D4A843', software: '#8BA8A0' };
   const CAT_LABEL = { physics: 'Physics & Math', finance: 'Finance', software: 'Software & STEM' };
 
-  // ── Build lemniscate (∞) path ─────────────────────────────────────
+  //  Build lemniscate (∞) path 
   const VW = 860, VH = 340, CX = VW/2, CY = VH/2, A = 268, YS = 0.76;
   function lem(t) {
     const s = Math.sin(t), c = Math.cos(t), d = 1 + s*s;
@@ -903,7 +903,7 @@
   }
   function hideTip() { tipBox.classList.remove('show'); }
 
-  // ── Build project cards ───────────────────────────────────────────
+  //  Build project cards 
   const grid = document.getElementById('proj-grid');
   PROJECTS.forEach(p => {
     const a = document.createElement('a');
@@ -922,14 +922,12 @@
     grid.appendChild(a);
   });
 
-  // ── Tips data ─────────────────────────────────────────────────────
+  //  Tips data 
   const TIPS = [
-    { h: 'Start before you feel ready', p: "You won't understand everything before you begin. Start the project, hit a wall, then figure it out. That loop is the whole point. It's the driving force for curiosity, and it is the only real cure for Einstein's definition of insanity: doing the same thing over and over again and expecting different results." },
-    { h: 'Teach yourself relentlessly', p: "I learned derivatives while still in Pre-Calc and post-graduate mathematics to simulate black holes because my projects demanded it. Don't wait for school to catch up to your curiosity. It never will if you're doing it right." },
-    { h: 'Connect your passions', p: "Trading interested me so I built tools for it. Physics fascinated me so I simulated it. The best projects come from genuine interest, not obligation. When you chase what already gives you curiosity, you're far more likely to stick with it — and push further than you ever thought was possible." },
-    { h: 'Small wins compound', p: "The 2D lensing model was a stepping stone to GPU-accelerated black holes. Every project, small or large, you finish powers the next one. Every good project works this way. Each one teaches you something that unlocks the next level, and more importantly, keeps you going." },
-    { h: 'Document everything', p: "Record your process, your failures, and your reasoning as you go. You will make mistakes, everyone does. But if you document them, you won't repeat them. Future-you will thank present-you. So will Dr. Lena because your presentations will be better." },
-    { h: 'Let curiosity lead', p: "One pendulum question led to three numerical methods, a chaos paper, and eventually relativistic physics. Follow the thread wherever it goes because that thread is the driving force behind every project here. None of this was planned. It all stemmed from one project onto another." },
+    { h: 'Hit the wall, then learn', p: "I didn't know derivatives when I started the pendulum — I learned them because the sim needed them, not because a unit was coming up. Start the project anyway. The gap between what you know and what you need is where PostAP actually happens." },
+    { h: 'Projects stack', p: "2D lensing came before the GPU black hole. Pendulum numerics showed up again in the trading backtester. Finish something even if it's small — the next idea usually piggybacks on code you already wrote." },
+    { h: 'Write it down for presentations', p: "When a run fails or a parameter choice is weird, note it. Dr. Lena's presentations go better when you can explain a wrong turn, not just the final demo." },
+    { h: 'Pick something you\'d stay up for', p: "The trading bot, the ray tracer, the poker bot — I kept working on those after school because I wanted to, not because a rubric said to. If you're bored on week two, switch topics before you're locked in." },
   ];
   const tipsG = document.getElementById('tips-g');
   TIPS.forEach((t, i) => {
@@ -939,7 +937,7 @@
     tipsG.appendChild(card);
   });
 
-  // ── Scroll reveal ─────────────────────────────────────────────────
+  //  Scroll reveal 
   const ro = new IntersectionObserver(entries => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
   }, { threshold: 0.08 });

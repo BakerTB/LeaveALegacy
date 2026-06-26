@@ -111,7 +111,7 @@
   <div class="hero">
     <div class="cat-badge"><div class="cat-dot"></div>Physics &amp; Math</div>
     <h1 class="hero-title">Double Pendulum<br>Simulations</h1>
-    <p class="hero-sub">Comparing three numerical integration methods on a chaotic physical system — Euler, RK4, and Runge-Kutta-Nyström.</p>
+    <p class="hero-sub">Three Pygame sims of the same double pendulum — Euler, RK4, and RKN — so I could compare which integrator actually holds energy over time.</p>
     <div class="stats-row">
       <div class="stat"><span class="stat-val">3</span><span class="stat-lbl">Simulations</span></div>
       <div class="stat"><span class="stat-val">18k</span><span class="stat-lbl">Data Points</span></div>
@@ -121,19 +121,14 @@
   <div class="content">
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
+      <div class="card-head"><span class="card-title">Overview</span></div>
       <div class="card-body">
-        <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Built <strong>three working double pendulum GUI simulations</strong> in Python, each using a different numerical integration method.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Self-taught <strong>derivatives and differential equations</strong> while still enrolled in Pre-Calculus — the physics demanded it.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Analyzed approximately <strong>18,000 lines of output data</strong> to compare the accuracy and stability of each method.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Mentored by <strong>Dr. Charles Lena</strong>, Episcopal School of Dallas.</span></div>
-        </div>
+        <p style="font-size:0.875rem;color:var(--text-2);line-height:1.75">I built three separate Pygame GUIs for the same double pendulum, each wired to a different integrator. I was still in Pre-Calc when I started, so I had to teach myself derivatives and ODEs as I went. Every frame logged to CSV through <code style="color:var(--accent);font-size:0.8rem">EnergyLogger</code> — about 18,000 rows total — and I used the energy drift plots to judge which method was lying to me the least. Dr. Lena mentored the project at ESD.</p>
       </div>
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🎬</span><span class="card-title">Simulation Demos — Euler vs RK4 vs RKN</span></div>
+      <div class="card-head"><span class="card-title">Simulation Demos — Euler vs RK4 vs RKN</span></div>
       <div class="card-body">
         <div class="gif-row">
           <div>
@@ -148,15 +143,15 @@
             <div class="gif-label">RKN</div>
             <div class="gif-wrap"><img src="rkn-pendulum.gif" alt="Double pendulum simulation using RKN method" loading="lazy" /></div>
           </div>
-        </div>Each clip is 10 seconds of the Pygame GUI after startup. Same initial conditions across all three integrators. They differ in speeds and accuracy because different methods are used to solve the differential equations.
-        <p style="font-size:0.78rem;color:var(--text-3);margin-top:12px;text-align:center"></p>
+        </div>
+        <p style="font-size:0.78rem;color:var(--text-3);margin-top:12px;text-align:center">Each clip is 10 seconds of the Pygame GUI after startup, cropped to the plot area. Same initial conditions across all three integrators.</p>
       </div>
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">⚙️</span><span class="card-title">System Description</span></div>
+      <div class="card-head"><span class="card-title">System Description</span></div>
       <div class="card-body">
-        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:18px;line-height:1.7">A double pendulum consists of two pendulums attached end-to-end — the second pendulum hangs from the tip of the first. Despite the simple setup, the system exhibits <strong style="color:var(--text)">chaotic behavior</strong>: tiny differences in initial conditions lead to wildly different trajectories, making it a fascinating and challenging system to simulate numerically.</p>
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:18px;line-height:1.7">Two pendulums chained together. Small changes in starting angle send the paths apart fast — that's what made this worth simulating instead of solving by hand.</p>
         <div class="eq-block">
           <div class="eq-label">Governing Equations — Second Order ODE System</div>
           θ₁̈ = f(θ₁, θ₂, θ̇₁, θ̇₂, m₁, m₂, L₁, L₂, g)<br>
@@ -167,9 +162,9 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🔋</span><span class="card-title">Energy Conservation</span></div>
+      <div class="card-head"><span class="card-title">Energy Conservation</span></div>
       <div class="card-body">
-        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">One key way to validate a numerical simulation is energy conservation. In a frictionless double pendulum, the total mechanical energy (KE + PE) must stay constant. Drift means numerical error — a direct comparison metric between methods.</p>
+        <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">If the simulation is working, total energy should stay flat. When it doesn't, you can see exactly which integrator is adding or bleeding energy — that was my main way of comparing Euler, RK4, and RKN.</p>
         <div class="eq-block">
           <div class="eq-label">Kinetic Energy (from CalcEnergy.py)</div>
           KE = ½m₁(L₁ω₁)² + ½m₂[L₁²ω₁² + L₂²ω₂² + 2L₁L₂ω₁ω₂cos(θ₁−θ₂)]
@@ -184,20 +179,20 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">📐</span><span class="card-title">Three Numerical Methods Compared</span></div>
+      <div class="card-head"><span class="card-title">Three Numerical Methods Compared</span></div>
       <div class="card-body">
         <div class="method-grid">
           <div class="method-card">
             <div class="method-name">Euler's Method</div>
-            <div class="method-desc">First-order technique. Uses the current slope (derivative) to step forward in time. Simple to implement but accumulates significant error over time — energy drift is visible early.</div>
+            <div class="method-desc">First-order. Easy to code, but energy climbs or falls within a few seconds of runtime — fine for a demo, not for long runs.</div>
           </div>
           <div class="method-card">
             <div class="method-name">Runge-Kutta 4th Order (RK4)</div>
-            <div class="method-desc">Computes four derivative estimates within each time step and takes a weighted average. Dramatically more accurate than Euler. Considered the standard for most physical simulations.</div>
+            <div class="method-desc">Four slope samples per step. Much tighter than Euler on the same timestep, though I still saw slow drift on very long runs.</div>
           </div>
           <div class="method-card">
             <div class="method-name">Runge-Kutta-Nyström (RKN)</div>
-            <div class="method-desc">A specialized variant of RK methods designed specifically for second-order ODEs. Avoids converting to first-order form, making it more efficient and accurate for mechanical systems like pendulums.</div>
+            <div class="method-desc">Built for second-order ODEs like this one — no need to rewrite the system in first-order form. Held energy the longest in my CSV logs.</div>
           </div>
         </div>
         <div style="margin-top:18px">
@@ -214,7 +209,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">📁</span><span class="card-title">Data Pipeline — Logging &amp; Plotting</span></div>
+      <div class="card-head"><span class="card-title">Data Pipeline — Logging &amp; Plotting</span></div>
       <div class="card-body">
         <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">Each simulation writes its full state to a CSV file every frame via <code style="color:var(--accent);font-size:0.8rem">EnergyLogger</code>, then <code style="color:var(--accent);font-size:0.8rem">plot_Energy.py</code> generates five diagnostic plots per method — 15 plots total across all three simulations.</p>
         <div class="eq-block">
@@ -234,22 +229,18 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">📊</span><span class="card-title">Results &amp; Analysis</span></div>
+      <div class="card-head"><span class="card-title">What the CSVs showed</span></div>
       <div class="card-body">
         <div class="result-box" style="margin-bottom:18px">
-          <div class="result-lbl">Key Finding</div>
-          <div class="result-text">Analyzed ~18,000 lines of simulation output. RKN outperformed both Euler and RK4 on energy conservation over long simulation times for second-order systems — confirming that method selection matters significantly for chaotic dynamics.</div>
+          <div class="result-lbl">Bottom line</div>
+          <div class="result-text">After ~18,000 logged frames, RKN kept total energy closest to flat over long runs. Euler drifted first. RK4 sat in the middle — good enough for most of the sim, but not as stable as RKN on this second-order system.</div>
         </div>
-        <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>Euler:</strong> Fastest to implement, but visible energy drift within seconds of simulation time. Not reliable for long-horizon chaotic systems.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>RK4:</strong> Dramatically better accuracy. Standard choice for most physics simulations. Small but nonzero energy drift over very long periods.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>RKN:</strong> Most accurate for this system. Since the governing equations are natively second-order, RKN avoids the overhead of first-order conversion and maintains energy conservation longest.</span></div>
-        </div>
+        <p style="font-size:0.875rem;color:var(--text-2);line-height:1.7"><strong style="color:var(--text)">Euler</strong> was the fastest to write and the first to show visible energy error. <strong style="color:var(--text)">RK4</strong> fixed most of that on normal timesteps. <strong style="color:var(--text)">RKN</strong> was the most work to implement but matched the physics best — the equations are already second-order, so forcing them into first-order form for Euler/RK4 was extra overhead for worse results.</p>
       </div>
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-head"><span class="card-title">Tech Stack</span></div>
       <div class="card-body">
         <div class="pills-row">
           <span class="pill">Python</span>
@@ -266,7 +257,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🎬</span><span class="card-title">Learn More</span></div>
+      <div class="card-head"><span class="card-title">Learn More</span></div>
       <div class="card-body">
         <div style="position:relative;padding-bottom:56.25%;height:0;border-radius:10px;overflow:hidden;border:1px solid var(--border-hi);">
           <iframe src="https://www.youtube.com/embed/H3Pgv49U1ts" title="Double Pendulum Simulation Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="position:absolute;top:0;left:0;width:100%;height:100%;"></iframe>

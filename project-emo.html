@@ -123,7 +123,7 @@
   <div class="content">
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
+      <div class="card-head"><span class="card-title">Overview</span></div>
       <div class="card-body">
         <div class="hi-list">
           <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Given any audio file (.mp3/.wav), the classifier outputs an <strong>emo_percent score (0–100)</strong>, a confidence percentage, and a boolean <code style="font-size:0.8rem;color:var(--accent)">is_emo</code> decision — without ever being trained on labeled song data.</span></div>
@@ -135,7 +135,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🎵</span><span class="card-title">Audio Feature Extraction</span></div>
+      <div class="card-head"><span class="card-title">Audio Feature Extraction</span></div>
       <div class="card-body">
         <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:16px;line-height:1.7">Every song is loaded at 22,050 Hz mono and analyzed across these signal-processing features, which are then combined into four composite scores:</p>
         <div class="feat-grid">
@@ -168,7 +168,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">📝</span><span class="card-title">Lyric Analysis</span></div>
+      <div class="card-head"><span class="card-title">Lyric Analysis</span></div>
       <div class="card-body">
         <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">When a lyrics file is provided, five text features are extracted and combined into a <code style="font-size:0.8rem;color:var(--accent)">lyric_score</code> (0–1). This score then gets 50% weight in the final emo_percent calculation.</p>
         <div class="feat-grid">
@@ -197,7 +197,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">📊</span><span class="card-title">Scoring Pipeline</span></div>
+      <div class="card-head"><span class="card-title">Scoring Pipeline</span></div>
       <div class="card-body">
         <div class="eq-block">
           <div class="eq-label">Final emo_percent calculation</div>
@@ -218,7 +218,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">⚙️</span><span class="card-title">Three Decision Profiles</span></div>
+      <div class="card-head"><span class="card-title">Three Decision Profiles</span></div>
       <div class="card-body">
         <div class="profile-row">
           <div class="profile-card">
@@ -242,7 +242,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🔬</span><span class="card-title">Baseline Comparison Mode</span></div>
+      <div class="card-head"><span class="card-title">Baseline Comparison Mode</span></div>
       <div class="card-body">
         <div class="hi-list">
           <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Optionally feed a <strong>known emo song</strong> (<code style="font-size:0.8rem;color:var(--accent)">--baseline-audio EMOSong.mp3</code>) and a <strong>known non-emo song</strong> (<code style="font-size:0.8rem;color:var(--accent)">--anti-baseline-audio REALLYNONEMO.mp3</code>).</span></div>
@@ -253,7 +253,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-head"><span class="card-title">Tech Stack</span></div>
       <div class="card-body">
         <div class="pills-row">
           <span class="pill">Python</span>

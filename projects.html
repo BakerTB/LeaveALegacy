@@ -40,7 +40,7 @@
       overflow-x: hidden;
     }
 
-    /* ── Grain texture ─────────────────────────────────── */
+    /*  Grain texture  */
     body::before {
       content: '';
       position: fixed;
@@ -52,7 +52,7 @@
       background-size: 200px 200px;
     }
 
-    /* ── Spores canvas ─────────────────────────────────── */
+    /*  Spores canvas  */
     #spores-canvas {
       position: fixed;
       inset: 0;
@@ -60,7 +60,7 @@
       pointer-events: none;
     }
 
-    /* ── Fog layer ─────────────────────────────────────── */
+    /*  Fog layer  */
     .fog-layer {
       position: fixed;
       inset: 0;
@@ -78,7 +78,7 @@
       100% { transform: translateX(4%)  translateY(2%) scale(1);   opacity: 0.65; }
     }
 
-    /* ── Vignette ──────────────────────────────────────── */
+    /*  Vignette  */
     .vignette {
       position: fixed;
       inset: 0;
@@ -87,7 +87,7 @@
       background: radial-gradient(ellipse 110% 110% at 50% 50%, transparent 38%, rgba(7,19,11,0.65) 100%);
     }
 
-    /* ── Ambient blobs ─────────────────────────────────── */
+    /*  Ambient blobs  */
     .blob {
       position: fixed;
       border-radius: 50%;
@@ -99,7 +99,7 @@
     .blob-2 { width: 550px; height: 550px; background: rgba(45,90,61,0.05);   bottom: 18%; left: -220px; }
     .blob-3 { width: 380px; height: 380px; background: rgba(127,163,107,0.04); bottom: -100px; right: 10%; }
 
-    /* ── NAV ───────────────────────────────────────────── */
+    /*  NAV  */
     .top-nav {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -129,7 +129,7 @@
     }
     .nav-link:hover { color: var(--text); }
 
-    /* ── EXPLORER SECTION ──────────────────────────────── */
+    /*  EXPLORER SECTION  */
     #explorer {
       position: relative;
       z-index: 1;
@@ -222,7 +222,7 @@
     }
     #tip-box.show { opacity: 1; }
 
-    /* ── SVG NODE STYLES ───────────────────────────────── */
+    /*  SVG NODE STYLES  */
     .node-g { cursor: pointer; }
     .node-g .n-ring  { transition: stroke-opacity 0.22s ease, stroke-width 0.22s ease; }
     .node-g .n-glow  { transition: opacity 0.22s ease; }
@@ -231,7 +231,7 @@
     .node-g:hover .n-glow  { opacity: 0.16 !important; }
     .node-g:hover .n-num   { fill-opacity: 1 !important; }
 
-    /* ── HINT BELOW SVG ────────────────────────────────── */
+    /*  HINT BELOW SVG  */
     .click-hint {
       margin-top: 32px;
       font-size: 11px;
@@ -309,7 +309,7 @@
   </section>
 
   <script>
-  // ── Floating spores ───────────────────────────────────────────────
+  //  Floating spores 
   (function() {
     const canvas = document.getElementById('spores-canvas');
     const ctx = canvas.getContext('2d');
@@ -344,7 +344,7 @@
     draw();
   })();
 
-  // ── Projects data ─────────────────────────────────────────────────
+  //  Projects data 
   const PROJECTS = [
     // Physics & Math
     { id: 'pendulum',     cat: 'physics',  title: 'Double Pendulum Simulations',         url: 'project-pendulum.html'     },

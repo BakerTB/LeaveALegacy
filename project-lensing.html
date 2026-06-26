@@ -118,19 +118,14 @@
   <div class="content">
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🌿</span><span class="card-title">Overview</span></div>
+      <div class="card-head"><span class="card-title">Overview</span></div>
       <div class="card-body">
-        <div class="hi-list">
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Purpose: <strong>simulate a black hole curving light around it</strong> using physics-based geodesic ray tracing in 2D.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Implemented <strong>Albert Einstein and Karl Schwarzschild's physics equations</strong> to accurately alter the path of each light ray based on the black hole's gravitational pull.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Used <strong>polar coordinates centered on the black hole</strong> to simplify curvature and distance calculations along each ray's trajectory.</span></div>
-          <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">This project directly <strong>led to the 3D GPU Ray Tracing simulation</strong> — see <a href="project-blackhole.html" style="color:var(--accent);text-decoration:none;font-weight:600">Black Hole GPU Ray Tracing →</a></span></div>
-        </div>
+        <p style="font-size:0.875rem;color:var(--text-2);line-height:1.75;margin-bottom:14px">Before the GPU black hole project, I traced light rays in 2D around a Schwarzschild metric. Polar coordinates centered on the hole made the geodesic math manageable. I compared Euler and RK4 integrators on the same ray setup — RK4 was visibly smoother in the demos below. That 2D version is what convinced me the full 3D ray tracer was worth attempting. <a href="project-blackhole.html" style="color:var(--accent);text-decoration:none;font-weight:600">Black Hole GPU Ray Tracing →</a></p>
       </div>
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🎬</span><span class="card-title">Simulation Demos — Euler vs RK4</span></div>
+      <div class="card-head"><span class="card-title">Simulation Demos — Euler vs RK4</span></div>
       <div class="card-body">
         <div class="gif-row">
           <div>
@@ -152,7 +147,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🕳️</span><span class="card-title">Black Holes &amp; The Event Horizon</span></div>
+      <div class="card-head"><span class="card-title">Black Holes &amp; The Event Horizon</span></div>
       <div class="card-body">
         <div class="hi-list">
           <div class="hi"><span class="hi-arrow">→</span><span class="hi-text"><strong>A black hole forms</strong> when gravity curves spacetime so strongly that not even light has a path leading outward.</span></div>
@@ -170,7 +165,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">💡</span><span class="card-title">Creating Light Rays</span></div>
+      <div class="card-head"><span class="card-title">Creating Light Rays</span></div>
       <div class="card-body">
         <div class="hi-list">
           <div class="hi"><span class="hi-arrow">→</span><span class="hi-text">Each light ray is represented as a particle, updated using a <strong>numerical step function</strong> over small time intervals.</span></div>
@@ -182,7 +177,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">📐</span><span class="card-title">Geodesics &amp; The Schwarzschild Metric</span></div>
+      <div class="card-head"><span class="card-title">Geodesics &amp; The Schwarzschild Metric</span></div>
       <div class="card-body">
         <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:10px;line-height:1.7">A geodesic is the shortest path in curved spacetime — the path all objects follow when no other force acts on them. Light follows a <em>null geodesic</em> (massless path). We use Einstein's field equations to find this path.</p>
         <div class="hi-list">
@@ -200,7 +195,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">📊</span><span class="card-title">Two Numerical Methods</span></div>
+      <div class="card-head"><span class="card-title">Two Numerical Methods</span></div>
       <div class="card-body">
         <div class="method-grid">
           <div class="method-card">
@@ -216,7 +211,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🌀</span><span class="card-title">2D Kerr Lensing — Rotating Black Holes</span></div>
+      <div class="card-head"><span class="card-title">2D Kerr Lensing — Rotating Black Holes</span></div>
       <div class="card-body">
         <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">After the Schwarzschild model, I extended the simulation to the <strong style="color:var(--text)">Kerr metric</strong> — which describes a spinning black hole. Spin changes everything: the black hole now drags spacetime around it, creating an ergosphere where particles are forced to co-rotate.</p>
         <div class="hi-list">
@@ -233,7 +228,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">⚡</span><span class="card-title">Adaptive RK45 Integrator (Dormand-Prince)</span></div>
+      <div class="card-head"><span class="card-title">Adaptive RK45 Integrator (Dormand-Prince)</span></div>
       <div class="card-body">
         <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">The third simulation (<code style="color:var(--accent);font-size:0.8rem">2DLensingKerr45.py</code>) replaces the fixed-step RK4 with a <strong style="color:var(--text)">Dormand-Prince RK45 adaptive integrator</strong> — the same algorithm used by MATLAB's <code style="font-size:0.8rem;color:var(--accent)">ode45</code> and SciPy's <code style="font-size:0.8rem;color:var(--accent)">solve_ivp</code>. Each ray gets its own independently adapting step size.</p>
         <div class="hi-list">
@@ -251,7 +246,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🌐</span><span class="card-title">3D Gravitational Lensing</span></div>
+      <div class="card-head"><span class="card-title">3D Gravitational Lensing</span></div>
       <div class="card-body">
         <p style="font-size:0.875rem;color:var(--text-2);margin-bottom:14px;line-height:1.7">The final simulation lifts everything into full 3D — a 20×20 grid of rays (400 total) shot through 3D space at a Schwarzschild black hole, each bending in its own orbital plane. Three integrators are available at runtime.</p>
         <div class="hi-list">
@@ -269,7 +264,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🚀</span><span class="card-title">What Came Next</span></div>
+      <div class="card-head"><span class="card-title">What Came Next</span></div>
       <div class="card-body">
         <div class="result-box">
           <div class="result-lbl">Project Progression</div>
@@ -286,7 +281,7 @@
     </div>
 
     <div class="card rev">
-      <div class="card-head"><span class="card-icon">🛠️</span><span class="card-title">Tech Stack</span></div>
+      <div class="card-head"><span class="card-title">Tech Stack</span></div>
       <div class="card-body">
         <div class="pills-row">
           <span class="pill">Python</span>
